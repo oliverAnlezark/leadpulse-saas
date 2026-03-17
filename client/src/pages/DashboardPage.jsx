@@ -90,7 +90,7 @@ export default function DashboardPage() {
         <h1 style={{ fontSize: '28px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>
           Welcome back, {agent?.fullName?.split(' ')[0] || 'Agent'}! 👋
         </h1>
-        <p style={{ margin: 0, opacity: 0.85, fontSize: '15px' }}>
+        <p style={{ margin: 0, color: 'rgba(255,255,255,0.95)', fontSize: '15px', fontWeight: '500' }}>
           {agent?.companyName || 'Your Agency'} · {agent?.location || 'Australia'}
         </p>
       </div>

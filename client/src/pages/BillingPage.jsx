@@ -49,7 +49,7 @@ export default function BillingPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', borderRadius: '16px', padding: '28px 36px', color: 'white', boxShadow: '0 8px 32px rgba(124,58,237,0.2)' }}>
         <h1 style={{ fontSize: '26px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>Billing & Subscription</h1>
-        <p style={{ margin: 0, opacity: 0.85, fontSize: '14px' }}>Manage your LeadPulse subscription and payment method</p>
+        <p style={{ margin: 0, color: 'rgba(255,255,255,0.95)', fontSize: '14px', fontWeight: '500' }}>Manage your LeadPulse subscription and payment method</p>
       </div>
 
       {!loading && (

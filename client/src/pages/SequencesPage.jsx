@@ -57,7 +57,7 @@ export default function SequencesPage() {
           <h1 style={{ fontSize: '26px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>
             Follow-Up Sequences
           </h1>
-          <p style={{ margin: 0, opacity: 0.85, fontSize: '14px' }}>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.95)', fontSize: '14px', fontWeight: '500' }}>
             Automate your lead follow-ups with multi-step sequences
           </p>
         </div>

@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div style={{ background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', borderRadius: '16px', padding: '28px 36px', color: 'white', boxShadow: '0 8px 32px rgba(124,58,237,0.2)' }}>
         <h1 style={{ fontSize: '26px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>Analytics</h1>
-        <p style={{ margin: 0, opacity: 0.85, fontSize: '14px' }}>Track your performance metrics and optimise your lead generation</p>
+        <p style={{ margin: 0, color: 'rgba(255,255,255,0.95)', fontSize: '14px', fontWeight: '500' }}>Track your performance metrics and optimise your lead generation</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>

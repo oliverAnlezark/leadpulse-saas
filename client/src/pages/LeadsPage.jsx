@@ -93,7 +93,7 @@ export default function LeadsPage() {
           <h1 style={{ fontSize: '26px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>
             Lead Pipeline
           </h1>
-          <p style={{ margin: 0, opacity: 0.85, fontSize: '14px' }}>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.95)', fontSize: '14px', fontWeight: '500' }}>
             Manage and track every lead through your sales process
           </p>
         </div>
