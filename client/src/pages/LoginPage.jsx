@@ -32,13 +32,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'system-ui, -apple-system, sans-serif', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
 
       {/* Left panel — branding */}
       <div style={{
-        width: '45%', background: 'linear-gradient(145deg, #7c3aed 0%, #4f46e5 60%, #3730a3 100%)',
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        padding: '48px 52px', position: 'relative', overflow: 'hidden',
+        width: window.innerWidth < 768 ? '100%' : '45%',
+        minHeight: window.innerWidth < 768 ? 'auto' : '100vh',
+        background: 'linear-gradient(145deg, #7c3aed 0%, #4f46e5 60%, #3730a3 100%)',
+        display: 'flex', flexDirection: 'column', justifyContent: window.innerWidth < 768 ? 'flex-start' : 'space-between',
+        padding: window.innerWidth < 768 ? '32px 24px 24px' : '48px 52px', position: 'relative', overflow: 'hidden',
       }}>
         {/* Decorative circles */}
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '320px', height: '320px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
@@ -47,11 +49,22 @@ export default function LoginPage() {
 
         {/* Logo + content */}
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '56px' }}>
-            <div style={{ width: '44px', height: '44px', background: 'rgba(255,255,255,0.2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'white', fontWeight: '800', fontSize: '18px' }}>LP</span>
-            </div>
-            <span style={{ color: 'white', fontWeight: '700', fontSize: '20px', letterSpacing: '-0.02em' }}>LeadPulse</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: window.innerWidth < 768 ? '32px' : '56px' }}>
+            <svg width="40" height="36" viewBox="0 0 40 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+              <rect x="2" y="2" width="10" height="28" rx="2" fill="url(#lpurple)" />
+              <rect x="2" y="26" width="18" height="6" rx="2" fill="url(#lpurple)" />
+              <rect x="16" y="2" width="10" height="28" rx="2" fill="#1a1a2e" />
+              <path d="M16 2 h12 a8 8 0 0 1 0 16 h-12 z" fill="#1a1a2e" />
+              <path d="M16 2 h11 a7 7 0 0 1 0 14 h-11 z" fill="#2d2d44" />
+              <polyline points="4,18 8,18 10,12 13,24 16,18 20,18 22,14 25,22 28,18 36,18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <defs>
+                <linearGradient id="lpurple" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#a855f7" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <span style={{ color: 'white', fontWeight: '700', fontSize: '18px', letterSpacing: '-0.02em' }}><span style={{ color: '#a855f7' }}>Lead</span>Pulse</span>
           </div>
           <h2 style={{ fontSize: '32px', fontWeight: '800', color: 'white', margin: '0 0 16px 0', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
             Turn enquiries into clients — automatically.
@@ -92,7 +105,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right panel — form */}
-      <div style={{ flex: 1, background: '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 52px' }}>
+      <div style={{ flex: 1, background: '#f9fafb', display: 'flex', alignItems: window.innerWidth < 768 ? 'flex-start' : 'center', justifyContent: 'center', padding: window.innerWidth < 768 ? '32px 24px 24px' : '48px 52px', overflowY: window.innerWidth < 768 ? 'auto' : 'visible' }}>
         <div style={{ width: '100%', maxWidth: '400px' }}>
           <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#111827', margin: '0 0 8px 0', letterSpacing: '-0.02em' }}>Welcome back</h1>
           <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 36px 0' }}>Sign in to your LeadPulse account</p>
