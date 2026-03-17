@@ -3,12 +3,24 @@ import { query } from '../db.js';
 import { sendEmail } from './email.js';
 import { sendSMS } from './sms.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Lazy initialize OpenAI client
+let openai = null;
+
+const getOpenAIClient = () => {
+  if (!openai) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is not set');
+    }
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+};
 
 export const triggerAIResponse = async (agentId, leadId, leadEmail, firstName, lastName, propertyInterest) => {
   try {
+    const client = getOpenAIClient();
+    
     // Get agent details
     const agentResult = await query(
       'SELECT ai_prompt_template, full_name, company_name FROM agents WHERE id = $1',
@@ -34,7 +46,7 @@ Lead inquiry: ${propertyInterest || 'General inquiry'}
 
 ${prompt}`;
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: systemPrompt },
@@ -80,7 +92,9 @@ Keep it concise and professional.`;
 
 export const generateLeadQualificationQuestions = async (propertyInterest) => {
   try {
-    const response = await openai.chat.completions.create({
+    const client = getOpenAIClient();
+    
+    const response = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         {
