@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { Trash2, Eye, Filter } from 'lucide-react';
+import { Trash2, Eye, Filter, X, Mail, Phone, Home, Calendar, DollarSign } from 'lucide-react';
 
 export default function LeadsPage() {
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
@@ -32,74 +32,83 @@ export default function LeadsPage() {
 
   const getStatusColor = (status) => {
     const colors = {
-      new: 'bg-gray-100 text-gray-800',
-      contacted: 'bg-blue-100 text-blue-800',
-      qualified: 'bg-green-100 text-green-800',
-      converted: 'bg-emerald-100 text-emerald-800',
-      lost: 'bg-red-100 text-red-800'
+      new: 'bg-blue-100 text-blue-800 border-blue-300',
+      contacted: 'bg-purple-100 text-purple-800 border-purple-300',
+      qualified: 'bg-green-100 text-green-800 border-green-300',
+      converted: 'bg-emerald-100 text-emerald-800 border-emerald-300',
+      lost: 'bg-red-100 text-red-800 border-red-300'
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return colors[status] || 'bg-gray-100 text-gray-800 border-gray-300';
   };
 
   const getScoreColor = (score) => {
     const colors = {
-      hot: 'text-red-600',
-      warm: 'text-orange-600',
-      cold: 'text-blue-600'
+      hot: 'bg-red-100 text-red-700 border-red-300',
+      warm: 'bg-orange-100 text-orange-700 border-orange-300',
+      cold: 'bg-blue-100 text-blue-700 border-blue-300'
     };
-    return colors[score] || 'text-gray-600';
+    return colors[score] || 'bg-gray-100 text-gray-700 border-gray-300';
   };
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Leads</h1>
-        <p className="text-gray-600 mt-1">Manage and track your leads</p>
+        <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
+        <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
-        <Filter size={20} className="text-gray-600" />
-        {['all', 'new', 'contacted', 'qualified', 'converted'].map(status => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              filter === status
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-          </button>
-        ))}
+      <div className="bg-white rounded-xl shadow-sm border border-purple-100 p-5 flex items-center space-x-3 overflow-x-auto">
+        <Filter size={20} className="text-purple-600 flex-shrink-0" />
+        <div className="flex space-x-2">
+          {['all', 'new', 'contacted', 'qualified', 'converted'].map(status => (
+            <button
+              key={status}
+              onClick={() => setFilter(status)}
+              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap ${
+                filter === status
+                  ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-md'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+              }`}
+            >
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Leads Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-purple-100 overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-gray-600">Loading leads...</div>
+          <div className="p-12 text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <p className="text-gray-600 mt-4">Loading leads...</p>
+          </div>
         ) : leads.length === 0 ? (
-          <div className="p-8 text-center text-gray-600">No leads found</div>
+          <div className="p-12 text-center">
+            <Users size={48} className="mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-600 text-lg">No leads found</p>
+            <p className="text-gray-500 text-sm mt-2">Start by creating a new lead or connecting your CRM</p>
+          </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gradient-to-r from-purple-50 to-purple-100 border-b-2 border-purple-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Name</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Email</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Phone</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Score</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Source</th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Email</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Phone</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Score</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Source</th>
+                  <th className="px-6 py-4 text-left text-sm font-bold text-gray-900">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="divide-y divide-purple-100">
                 {leads.map(lead => (
-                  <tr key={lead.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                  <tr key={lead.id} className="hover:bg-purple-50 transition-colors duration-200">
+                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                       {lead.firstName} {lead.lastName}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{lead.email}</td>
@@ -108,7 +117,7 @@ export default function LeadsPage() {
                       <select
                         value={lead.status}
                         onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                        className={`px-3 py-1 rounded-full text-sm font-medium border-0 cursor-pointer ${getStatusColor(lead.status)}`}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 cursor-pointer transition-all ${getStatusColor(lead.status)}`}
                       >
                         <option value="new">New</option>
                         <option value="contacted">Contacted</option>
@@ -117,20 +126,24 @@ export default function LeadsPage() {
                         <option value="lost">Lost</option>
                       </select>
                     </td>
-                    <td className={`px-6 py-4 text-sm font-medium ${getScoreColor(lead.score)}`}>
-                      {lead.score?.charAt(0).toUpperCase() + lead.score?.slice(1) || '-'}
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1.5 rounded-lg text-sm font-semibold border-2 inline-block ${getScoreColor(lead.score)}`}>
+                        {lead.score?.charAt(0).toUpperCase() + lead.score?.slice(1) || '-'}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{lead.leadSource}</td>
                     <td className="px-6 py-4 text-sm space-x-2 flex">
                       <button
                         onClick={() => setSelectedLead(lead)}
-                        className="text-blue-600 hover:text-blue-700 p-1"
+                        className="p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-600 transition-colors"
+                        title="View details"
                       >
                         <Eye size={18} />
                       </button>
                       <button
                         onClick={() => handleDelete(lead.id)}
-                        className="text-red-600 hover:text-red-700 p-1"
+                        className="p-2 rounded-lg bg-red-100 hover:bg-red-200 text-red-600 transition-colors"
+                        title="Delete lead"
                       >
                         <Trash2 size={18} />
                       </button>
@@ -145,46 +158,63 @@ export default function LeadsPage() {
 
       {/* Lead Detail Modal */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-96 overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto border border-purple-100">
+            <div className="sticky top-0 bg-gradient-to-r from-purple-50 to-purple-100 border-b border-purple-200 p-6 flex justify-between items-start">
+              <h2 className="text-2xl font-bold text-gray-900">
+                {selectedLead.firstName} {selectedLead.lastName}
+              </h2>
+              <button
+                onClick={() => setSelectedLead(null)}
+                className="p-2 rounded-lg hover:bg-purple-200 text-gray-600 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
             <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {selectedLead.firstName} {selectedLead.lastName}
-                </h2>
-                <button
-                  onClick={() => setSelectedLead(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600">Email</p>
-                  <p className="font-medium text-gray-900">{selectedLead.email}</p>
+              <div className="grid grid-cols-2 gap-6">
+                <div className="flex items-start space-x-3">
+                  <Mail className="text-purple-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">Email</p>
+                    <p className="font-semibold text-gray-900">{selectedLead.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Phone className="text-purple-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">Phone</p>
+                    <p className="font-semibold text-gray-900">{selectedLead.phone || '-'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Home className="text-purple-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">Property Interest</p>
+                    <p className="font-semibold text-gray-900">{selectedLead.propertyInterest || '-'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Calendar className="text-purple-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">Timeline</p>
+                    <p className="font-semibold text-gray-900">{selectedLead.timeline || '-'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <DollarSign className="text-purple-600 flex-shrink-0 mt-1" size={20} />
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">Budget</p>
+                    <p className="font-semibold text-gray-900">
+                      {selectedLead.budget?.min ? `$${selectedLead.budget.min} - $${selectedLead.budget.max}` : '-'}
+                    </p>
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Phone</p>
-                  <p className="font-medium text-gray-900">{selectedLead.phone || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Property Interest</p>
-                  <p className="font-medium text-gray-900">{selectedLead.propertyInterest || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Timeline</p>
-                  <p className="font-medium text-gray-900">{selectedLead.timeline || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Budget</p>
-                  <p className="font-medium text-gray-900">
-                    {selectedLead.budget?.min ? `$${selectedLead.budget.min} - $${selectedLead.budget.max}` : '-'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600">Lead Source</p>
-                  <p className="font-medium text-gray-900">{selectedLead.leadSource}</p>
+                  <p className="text-sm text-gray-600 font-medium mb-1">Lead Source</p>
+                  <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
+                    {selectedLead.leadSource}
+                  </span>
                 </div>
               </div>
             </div>
