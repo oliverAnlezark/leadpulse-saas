@@ -71,23 +71,28 @@ export default function Layout({ children }) {
           padding: sidebarOpen ? '0 20px' : '0',
           flexShrink: 0,
         }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
-            }}>
-              <span style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>LP</span>
-            </div>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            {/* LP Logo SVG */}
+            <svg width="40" height="36" viewBox="0 0 40 36" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+              {/* L letter - purple */}
+              <rect x="2" y="2" width="10" height="28" rx="2" fill="url(#lpurple)" />
+              <rect x="2" y="26" width="18" height="6" rx="2" fill="url(#lpurple)" />
+              {/* P letter - dark */}
+              <rect x="16" y="2" width="10" height="28" rx="2" fill="#1a1a2e" />
+              <path d="M16 2 h12 a8 8 0 0 1 0 16 h-12 z" fill="#1a1a2e" />
+              <path d="M16 2 h11 a7 7 0 0 1 0 14 h-11 z" fill="#2d2d44" />
+              {/* Pulse line */}
+              <polyline points="4,18 8,18 10,12 13,24 16,18 20,18 22,14 25,22 28,18 36,18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <defs>
+                <linearGradient id="lpurple" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#a855f7" />
+                  <stop offset="100%" stopColor="#7c3aed" />
+                </linearGradient>
+              </defs>
+            </svg>
             {sidebarOpen && (
-              <span style={{ color: 'white', fontWeight: '700', fontSize: '18px', whiteSpace: 'nowrap' }}>
-                LeadPulse
+              <span style={{ color: 'white', fontWeight: '800', fontSize: '17px', whiteSpace: 'nowrap', letterSpacing: '-0.3px' }}>
+                <span style={{ color: '#a855f7' }}>Lead</span>Pulse
               </span>
             )}
           </Link>
