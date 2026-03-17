@@ -1,12 +1,24 @@
 import { OpenAI } from 'openai';
 import { query } from '../db.js';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// Lazy initialize OpenAI client
+let openai = null;
+
+const getOpenAIClient = () => {
+  if (!openai) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is not set');
+    }
+    openai = new OpenAI({ apiKey });
+  }
+  return openai;
+};
 
 export const qualifyLead = async (leadId, agentId, responses = {}) => {
   try {
+    const client = getOpenAIClient();
+    
     // Get lead data
     const leadResult = await query('SELECT * FROM leads WHERE id = $1 AND agent_id = $2', [leadId, agentId]);
 
@@ -37,7 +49,7 @@ Please provide:
 
 Format your response as JSON.`;
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a real estate lead qualification expert. Always respond with valid JSON.' },
@@ -86,11 +98,13 @@ Format your response as JSON.`;
 
 export const generateQualificationQuestions = async (propertyInterest) => {
   try {
+    const client = getOpenAIClient();
+    
     const prompt = `Generate 3-4 qualifying questions for a real estate lead interested in: ${propertyInterest || 'general real estate'}
 
 Format as a JSON array of question objects with 'question' and 'type' (text/select/date) fields.`;
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: 'gpt-4',
       messages: [
         { role: 'system', content: 'You are a real estate lead qualification expert. Always respond with valid JSON.' },
