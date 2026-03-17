@@ -9,6 +9,7 @@
     "dev:server": "node --watch server/index.js",
     "dev:client": "vite",
     "start": "node server/index.js",
+    "migrate": "node db/migrate.mjs",
     "build": "vite build",
     "test": "echo 'Test script'"
   },
