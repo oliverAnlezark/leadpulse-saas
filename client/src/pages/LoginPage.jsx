@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Mail, Lock, AlertCircle, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle, Zap, Users, BarChart2 } from 'lucide-react';
+
+const FEATURES = [
+  { icon: Zap, label: 'AI-powered responses', desc: 'Instant replies to every enquiry' },
+  { icon: Users, label: 'Lead management', desc: 'Track every lead through your pipeline' },
+  { icon: BarChart2, label: 'Analytics & insights', desc: 'Know exactly what is working' },
+];
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -15,112 +21,147 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
       await login(email, password);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 flex items-center justify-center px-4 py-12">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-transparent rounded-full opacity-10 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-purple-200 to-transparent rounded-full opacity-10 blur-3xl"></div>
-      </div>
+    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-purple-100">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-3xl">LP</span>
+      {/* Left panel — branding */}
+      <div style={{
+        width: '45%', background: 'linear-gradient(145deg, #7c3aed 0%, #4f46e5 60%, #3730a3 100%)',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        padding: '48px 52px', position: 'relative', overflow: 'hidden',
+      }}>
+        {/* Decorative circles */}
+        <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '320px', height: '320px', borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }} />
+        <div style={{ position: 'absolute', bottom: '-60px', left: '-60px', width: '260px', height: '260px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+        <div style={{ position: 'absolute', top: '40%', left: '60%', width: '140px', height: '140px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
+
+        {/* Logo + content */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '56px' }}>
+            <div style={{ width: '44px', height: '44px', background: 'rgba(255,255,255,0.2)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: 'white', fontWeight: '800', fontSize: '18px' }}>LP</span>
+            </div>
+            <span style={{ color: 'white', fontWeight: '700', fontSize: '20px', letterSpacing: '-0.02em' }}>LeadPulse</span>
+          </div>
+          <h2 style={{ fontSize: '32px', fontWeight: '800', color: 'white', margin: '0 0 16px 0', lineHeight: 1.2, letterSpacing: '-0.02em' }}>
+            Turn enquiries into clients — automatically.
+          </h2>
+          <p style={{ fontSize: '15px', color: 'rgba(255,255,255,0.85)', margin: '0 0 48px 0', lineHeight: 1.6 }}>
+            AI-powered lead automation built specifically for Australian real estate agents.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {FEATURES.map(({ icon: Icon, label, desc }) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div style={{ width: '40px', height: '40px', background: 'rgba(255,255,255,0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon size={18} color="white" />
+                </div>
+                <div>
+                  <p style={{ fontSize: '14px', fontWeight: '700', color: 'white', margin: '0 0 2px 0' }}>{label}</p>
+                  <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', margin: 0 }}>{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Testimonial */}
+        <div style={{ position: 'relative', zIndex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: '12px', padding: '20px' }}>
+          <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', margin: '0 0 10px 0', lineHeight: 1.6, fontStyle: 'italic' }}>
+            "LeadPulse has completely changed how I handle enquiries. I never miss a lead now."
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '32px', height: '32px', background: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: 'white' }}>SJ</span>
+            </div>
+            <div>
+              <p style={{ fontSize: '12px', fontWeight: '700', color: 'white', margin: 0 }}>Sarah Johnson</p>
+              <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', margin: 0 }}>Principal Agent, Sydney</p>
             </div>
           </div>
+        </div>
+      </div>
 
-          {/* Heading */}
-          <h1 className="text-3xl font-bold text-center text-gray-900 mb-2">LeadPulse</h1>
-          <p className="text-center text-gray-600 mb-8 text-sm">AI-powered lead automation for real estate agents</p>
+      {/* Right panel — form */}
+      <div style={{ flex: 1, background: '#f9fafb', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 52px' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
+          <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#111827', margin: '0 0 8px 0', letterSpacing: '-0.02em' }}>Welcome back</h1>
+          <p style={{ fontSize: '14px', color: '#6b7280', margin: '0 0 36px 0' }}>Sign in to your LeadPulse account</p>
 
-          {/* Error Alert */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 animate-fade-in">
-              <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
-              <p className="text-red-800 text-sm">{error}</p>
+            <div style={{ marginBottom: '20px', padding: '14px 16px', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '10px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <AlertCircle size={16} color="#ef4444" style={{ flexShrink: 0, marginTop: '1px' }} />
+              <p style={{ fontSize: '13px', color: '#dc2626', margin: 0 }}>{error}</p>
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-3.5 text-purple-400" size={20} />
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#374151', display: 'block', marginBottom: '7px' }}>Email Address</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={16} color="#9ca3af" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-purple-50 focus:bg-white transition-all"
                   placeholder="your@email.com"
                   required
+                  style={{ width: '100%', padding: '11px 14px 11px 40px', border: '1px solid #e5e7eb', borderRadius: '9px', fontSize: '14px', color: '#111827', outline: 'none', background: 'white', boxSizing: 'border-box' }}
+                  onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                  onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-3.5 text-purple-400" size={20} />
+              <label style={{ fontSize: '13px', fontWeight: '600', color: '#374151', display: 'block', marginBottom: '7px' }}>Password</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={16} color="#9ca3af" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-purple-50 focus:bg-white transition-all"
                   placeholder="••••••••"
                   required
+                  style={{ width: '100%', padding: '11px 14px 11px 40px', border: '1px solid #e5e7eb', borderRadius: '9px', fontSize: '14px', color: '#111827', outline: 'none', background: 'white', boxSizing: 'border-box' }}
+                  onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                  onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95"
+              style={{ marginTop: '6px', width: '100%', padding: '13px', border: 'none', borderRadius: '9px', background: loading ? '#9ca3af' : 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)', color: 'white', fontSize: '15px', fontWeight: '700', cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: loading ? 'none' : '0 4px 16px rgba(124,58,237,0.3)' }}
             >
-              <span>{loading ? 'Signing in...' : 'Sign In'}</span>
-              {!loading && <ArrowRight size={18} />}
+              {loading ? 'Signing in...' : <><span>Sign In</span><ArrowRight size={16} /></>}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-3 text-xs text-gray-500 font-medium">OR</span>
-            <div className="flex-1 border-t border-gray-200"></div>
+          <div style={{ margin: '28px 0', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
+            <span style={{ fontSize: '12px', color: '#9ca3af', fontWeight: '500' }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
           </div>
 
-          {/* Sign up link */}
-          <p className="text-center text-gray-600 text-sm">
+          <p style={{ textAlign: 'center', fontSize: '14px', color: '#6b7280', margin: 0 }}>
             Don't have an account?{' '}
-            <Link to="/register" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors">
-              Create one
-            </Link>
+            <Link to="/register" style={{ color: '#7c3aed', fontWeight: '700', textDecoration: 'none' }}>Create one free</Link>
+          </p>
+          <p style={{ textAlign: 'center', fontSize: '11px', color: '#9ca3af', margin: '24px 0 0 0' }}>
+            By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
-
-        {/* Footer text */}
-        <p className="text-center text-gray-500 text-xs mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
     </div>
   );
