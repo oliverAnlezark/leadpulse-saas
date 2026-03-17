@@ -76,12 +76,6 @@ async function runMigrations() {
   }
 }
 
-// Run migrations before starting server
-// Run migrations before starting server
-(async () => {
-  await runMigrations();
-})();
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -114,10 +108,22 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server and run migrations
+const server = app.listen(PORT, async () => {
   console.log(`LeadPulse server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Database: ${process.env.DATABASE_URL ? 'Connected' : 'Not configured'}`);
+  
+  // Run migrations after server starts
+  await runMigrations();
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
 });
 
