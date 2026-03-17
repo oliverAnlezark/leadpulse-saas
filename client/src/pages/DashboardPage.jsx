@@ -1,22 +1,12 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
-import {
-  TrendingUp,
-  Users,
-  MessageSquare,
-  CheckCircle,
-  Copy,
-  ArrowRight,
-  Zap,
-  Activity,
-  Target,
-  Clock,
-  AlertCircle,
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Users, CheckCircle, MessageSquare, Clock, Zap, Settings, ChevronRight, Copy, Check, Activity, Target } from 'lucide-react';
 
 export default function DashboardPage() {
   const { agent } = useAuthStore();
+  const navigate = useNavigate();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -35,10 +25,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
-
-    if (token) {
-      fetchAnalytics();
-    }
+    if (token) fetchAnalytics();
   }, [token]);
 
   const copyWebhook = () => {
@@ -48,246 +35,274 @@ export default function DashboardPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const StatCard = ({ icon: Icon, label, value, change, trend, color = 'purple' }) => {
-    const colorClasses = {
-      purple: 'from-purple-500 to-purple-600',
-      green: 'from-green-500 to-green-600',
-      blue: 'from-blue-500 to-blue-600',
-      orange: 'from-orange-500 to-orange-600',
-    };
+  const metricCards = [
+    {
+      label: 'Total Leads',
+      value: analytics?.leads?.total ?? 0,
+      sub: `${analytics?.leads?.qualified ?? 0} qualified`,
+      icon: Users,
+      color: '#7c3aed',
+      bg: '#f3e8ff',
+    },
+    {
+      label: 'Converted',
+      value: analytics?.leads?.converted ?? 0,
+      sub: `${analytics?.leads?.hot ?? 0} hot leads`,
+      icon: CheckCircle,
+      color: '#10b981',
+      bg: '#d1fae5',
+    },
+    {
+      label: 'Messages Sent',
+      value: analytics?.communications?.reduce((s, c) => s + c.sent, 0) ?? 0,
+      sub: `${analytics?.communications?.reduce((s, c) => s + c.delivered, 0) ?? 0} delivered`,
+      icon: MessageSquare,
+      color: '#3b82f6',
+      bg: '#dbeafe',
+    },
+    {
+      label: 'Avg Response',
+      value: `${analytics?.responseTime?.average ?? 0}m`,
+      sub: `${analytics?.responseTime?.min ?? 0}m – ${analytics?.responseTime?.max ?? 0}m`,
+      icon: Clock,
+      color: '#f59e0b',
+      bg: '#fef3c7',
+    },
+  ];
 
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all duration-300">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <p className="text-gray-600 text-sm font-medium mb-2">{label}</p>
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
-            {change && (
-              <p className="text-green-600 text-sm font-medium mt-3 flex items-center space-x-1">
-                <TrendingUp size={14} />
-                <span>{change}</span>
-              </p>
-            )}
-          </div>
-          <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 shadow-lg`}>
-            <Icon className="text-white" size={28} />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const ActionCard = ({ icon: Icon, title, description, href, isPrimary = false }) => (
-    <a
-      href={href}
-      className={`group relative overflow-hidden rounded-xl p-6 border-2 transition-all duration-300 hover:shadow-lg hover:scale-105 ${
-        isPrimary
-          ? 'bg-gradient-to-br from-purple-600 to-purple-700 border-purple-700 text-white shadow-lg'
-          : 'bg-white border-gray-200 hover:border-purple-300'
-      }`}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center space-x-2 mb-3">
-            <div
-              className={`p-2 rounded-lg ${
-                isPrimary ? 'bg-white bg-opacity-20' : 'bg-purple-100'
-              }`}
-            >
-              <Icon className={isPrimary ? 'text-white' : 'text-purple-600'} size={24} />
-            </div>
-          </div>
-          <h3 className={`font-bold text-lg mb-1 ${isPrimary ? 'text-white' : 'text-gray-900'}`}>
-            {title}
-          </h3>
-          <p className={`text-sm ${isPrimary ? 'text-purple-100' : 'text-gray-600'}`}>
-            {description}
-          </p>
-        </div>
-        <ArrowRight
-          className={`${isPrimary ? 'text-white' : 'text-purple-600'} opacity-0 group-hover:opacity-100 transition-opacity`}
-          size={20}
-        />
-      </div>
-    </a>
-  );
+  const quickActions = [
+    { label: 'View Leads', desc: 'Manage your lead pipeline', icon: Users, color: '#7c3aed', path: '/leads' },
+    { label: 'Create Sequence', desc: 'Set up follow-up automation', icon: Zap, color: '#10b981', path: '/sequences' },
+    { label: 'Configure CRM', desc: 'Connect your CRM integration', icon: Settings, color: '#3b82f6', path: '/settings' },
+  ];
 
   return (
-    <div className="space-y-8">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
-        <h1 className="text-4xl font-bold mb-2">Welcome back, {agent?.fullName || 'Agent'}! 👋</h1>
-        <p className="text-purple-100 text-lg">{agent?.companyName || 'Your Real Estate Company'}</p>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+      {/* Welcome Banner */}
+      <div style={{
+        background: 'linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)',
+        borderRadius: '16px',
+        padding: '32px 36px',
+        color: 'white',
+        boxShadow: '0 8px 32px rgba(124,58,237,0.2)',
+      }}>
+        <h1 style={{ fontSize: '28px', fontWeight: '700', margin: '0 0 6px 0', color: 'white' }}>
+          Welcome back, {agent?.fullName?.split(' ')[0] || 'Agent'}! 👋
+        </h1>
+        <p style={{ margin: 0, opacity: 0.85, fontSize: '15px' }}>
+          {agent?.companyName || 'Your Agency'} · {agent?.location || 'Australia'}
+        </p>
       </div>
 
-      {/* Key Metrics Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div
-              key={i}
-              className="bg-gradient-to-br from-gray-200 to-gray-100 rounded-xl h-40 animate-pulse"
-            ></div>
-          ))}
-        </div>
-      ) : analytics ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            icon={Users}
-            label="Total Leads"
-            value={analytics.leads.total}
-            change={`${analytics.leads.qualified} qualified`}
-            color="purple"
-          />
-          <StatCard
-            icon={CheckCircle}
-            label="Converted"
-            value={analytics.leads.converted}
-            change={`${analytics.leads.hot} hot leads`}
-            color="green"
-          />
-          <StatCard
-            icon={MessageSquare}
-            label="Messages Sent"
-            value={analytics.communications.reduce((sum, c) => sum + c.sent, 0)}
-            change={`${analytics.communications.reduce((sum, c) => sum + c.delivered, 0)} delivered`}
-            color="blue"
-          />
-          <StatCard
-            icon={Clock}
-            label="Avg Response"
-            value={`${analytics.responseTime.average}m`}
-            change={`${analytics.responseTime.min}m - ${analytics.responseTime.max}m`}
-            color="orange"
-          />
-        </div>
-      ) : null}
-
-      {/* Quick Actions Section */}
-      <div>
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="bg-purple-600 rounded-lg p-2">
-            <Zap className="text-white" size={24} />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ActionCard
-            icon={Users}
-            title="View Leads"
-            description="Manage your lead pipeline and track progress"
-            href="/leads"
-            isPrimary={true}
-          />
-          <ActionCard
-            icon={MessageSquare}
-            title="Create Sequence"
-            description="Set up follow-up automation for leads"
-            href="/sequences"
-          />
-          <ActionCard
-            icon={CheckCircle}
-            title="Configure CRM"
-            description="Connect your CRM integration"
-            href="/settings"
-          />
-        </div>
-      </div>
-
-      {/* Webhook Configuration */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <div className="flex items-center space-x-3 mb-2">
-              <div className="bg-purple-100 rounded-lg p-2">
-                <AlertCircle className="text-purple-600" size={24} />
+      {/* Metric Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
+        {metricCards.map((card) => {
+          const Icon = card.icon;
+          return (
+            <div key={card.label} style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '20px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+              border: '1px solid #f3f4f6',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '14px',
+            }}>
+              <div style={{
+                width: '46px',
+                height: '46px',
+                background: card.bg,
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <Icon size={22} color={card.color} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Webhook URL for Lead Intake</h3>
+              <div>
+                <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 4px 0', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{card.label}</p>
+                <p style={{ fontSize: '26px', fontWeight: '700', color: '#111827', margin: '0 0 3px 0', lineHeight: 1 }}>{card.value}</p>
+                <p style={{ fontSize: '12px', color: '#9ca3af', margin: 0 }}>{card.sub}</p>
+              </div>
             </div>
-            <p className="text-gray-600 text-sm">Use this URL to send leads from your website form:</p>
-          </div>
+          );
+        })}
+      </div>
+
+      {/* Quick Actions */}
+      <div>
+        <h2 style={{ fontSize: '15px', fontWeight: '700', color: '#111827', margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Quick Actions</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
+          {quickActions.map((action) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={action.label}
+                onClick={() => navigate(action.path)}
+                style={{
+                  background: 'white',
+                  border: '1px solid #f3f4f6',
+                  borderRadius: '12px',
+                  padding: '18px 20px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '14px',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = action.color + '40';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = '#f3f4f6';
+                }}
+              >
+                <div style={{
+                  width: '42px',
+                  height: '42px',
+                  background: action.color + '15',
+                  borderRadius: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <Icon size={20} color={action.color} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: '0 0 2px 0' }}>{action.label}</p>
+                  <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>{action.desc}</p>
+                </div>
+                <ChevronRight size={16} color="#d1d5db" />
+              </button>
+            );
+          })}
         </div>
-        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 font-mono text-sm text-gray-700 break-all flex items-center justify-between group hover:border-purple-300 transition-colors">
-          <span className="text-xs">{`${window.location.origin}/api/webhook/leads/${agent?.id}`}</span>
+      </div>
+
+      {/* Webhook URL */}
+      <div style={{
+        background: 'white',
+        borderRadius: '12px',
+        padding: '24px',
+        border: '1px solid #f3f4f6',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+      }}>
+        <h2 style={{ fontSize: '15px', fontWeight: '700', color: '#111827', margin: '0 0 4px 0' }}>
+          Webhook URL for Lead Intake
+        </h2>
+        <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 14px 0' }}>
+          Paste this URL into your website form to automatically send leads into LeadPulse
+        </p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          background: '#f9fafb',
+          border: '1px solid #e5e7eb',
+          borderRadius: '8px',
+          padding: '12px 16px',
+        }}>
+          <code style={{ flex: 1, fontSize: '13px', color: '#374151', wordBreak: 'break-all', fontFamily: 'monospace' }}>
+            {`${window.location.origin}/api/webhook/leads/${agent?.id}`}
+          </code>
           <button
             onClick={copyWebhook}
-            className="ml-4 p-2 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-600 transition-colors flex-shrink-0"
-            title="Copy webhook URL"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '8px 14px',
+              background: copied ? '#10b981' : '#7c3aed',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: '600',
+              whiteSpace: 'nowrap',
+              transition: 'background 0.2s ease',
+              flexShrink: 0,
+            }}
           >
-            <Copy size={18} />
+            {copied ? <Check size={14} /> : <Copy size={14} />}
+            {copied ? 'Copied!' : 'Copy URL'}
           </button>
         </div>
-        {copied && (
-          <p className="text-green-700 text-sm mt-3 font-medium animate-fade-in">
-            ✓ Webhook URL copied to clipboard!
-          </p>
-        )}
       </div>
 
-      {/* Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-blue-100 rounded-lg p-2">
-              <Activity className="text-blue-600" size={24} />
+      {/* How It Works + Pro Tips */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '24px',
+          border: '1px solid #f3f4f6',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
+            <div style={{ width: '32px', height: '32px', background: '#dbeafe', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Activity size={16} color="#3b82f6" />
             </div>
-            <h3 className="font-bold text-gray-900 text-lg">How It Works</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: 0 }}>How It Works</h3>
           </div>
-          <ol className="space-y-3 text-sm text-gray-600">
-            <li className="flex items-start space-x-3">
-              <span className="font-bold text-purple-600 flex-shrink-0">1.</span>
-              <span>
-                <span className="font-medium text-gray-900">Submit leads</span> via your website form
-              </span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="font-bold text-purple-600 flex-shrink-0">2.</span>
-              <span>
-                <span className="font-medium text-gray-900">AI processes</span> and qualifies leads
-              </span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="font-bold text-purple-600 flex-shrink-0">3.</span>
-              <span>
-                <span className="font-medium text-gray-900">Auto-respond</span> with personalized messages
-              </span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="font-bold text-purple-600 flex-shrink-0">4.</span>
-              <span>
-                <span className="font-medium text-gray-900">Track metrics</span> in your dashboard
-              </span>
-            </li>
-          </ol>
+          {[
+            ['Submit leads', 'via your website form'],
+            ['AI processes', 'and qualifies leads'],
+            ['Auto-respond', 'with personalized messages'],
+            ['Track metrics', 'in your dashboard'],
+          ].map(([bold, rest], i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', marginBottom: '12px' }}>
+              <div style={{
+                width: '22px', height: '22px',
+                background: '#7c3aed',
+                borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: '11px', fontWeight: '700', flexShrink: 0,
+              }}>{i + 1}</div>
+              <p style={{ fontSize: '13px', color: '#374151', margin: 0, lineHeight: '1.5' }}>
+                <strong>{bold}</strong> {rest}
+              </p>
+            </div>
+          ))}
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="bg-green-100 rounded-lg p-2">
-              <Target className="text-green-600" size={24} />
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          padding: '24px',
+          border: '1px solid #f3f4f6',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
+            <div style={{ width: '32px', height: '32px', background: '#d1fae5', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Target size={16} color="#10b981" />
             </div>
-            <h3 className="font-bold text-gray-900 text-lg">Pro Tips</h3>
+            <h3 style={{ fontSize: '14px', fontWeight: '700', color: '#111827', margin: 0 }}>Pro Tips</h3>
           </div>
-          <ul className="space-y-3 text-sm text-gray-600">
-            <li className="flex items-start space-x-3">
-              <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-              <span>Set up follow-up sequences for better conversion</span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-              <span>Connect your CRM for seamless integration</span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-              <span>Customize AI responses in settings</span>
-            </li>
-            <li className="flex items-start space-x-3">
-              <span className="text-green-600 font-bold flex-shrink-0">✓</span>
-              <span>Monitor analytics to optimize performance</span>
-            </li>
-          </ul>
+          {[
+            'Set up follow-up sequences for better conversion',
+            'Connect your CRM for seamless integration',
+            'Customize AI responses in settings',
+            'Monitor analytics to optimize performance',
+          ].map((tip, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '12px' }}>
+              <CheckCircle size={16} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <p style={{ fontSize: '13px', color: '#374151', margin: 0, lineHeight: '1.5' }}>{tip}</p>
+            </div>
+          ))}
         </div>
       </div>
+
     </div>
   );
 }
