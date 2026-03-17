@@ -80,6 +80,10 @@ async function runMigrations() {
 app.use(cors());
 app.use(express.json());
 
+// Serve static files from Vite build
+const distPath = path.join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -102,6 +106,17 @@ app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
+
+// Serve index.html for SPA routing
+app.get('*', (req, res) => {
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ error: 'Route not found' });
+  }
+});
+
 
 // 404 handler
 app.use((req, res) => {
