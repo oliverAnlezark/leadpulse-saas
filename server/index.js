@@ -77,7 +77,10 @@ async function runMigrations() {
 }
 
 // Run migrations before starting server
-await runMigrations();
+// Run migrations before starting server
+(async () => {
+  await runMigrations();
+})();
 
 // Middleware
 app.use(cors());
