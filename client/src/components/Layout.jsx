@@ -1,12 +1,26 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { BarChart3, Users, MessageSquare, Settings, CreditCard, LogOut, Menu, X } from 'lucide-react';
+import {
+  BarChart3,
+  Users,
+  MessageSquare,
+  Settings,
+  CreditCard,
+  LogOut,
+  Menu,
+  X,
+  Home,
+  TrendingUp,
+  Zap,
+  ChevronDown,
+} from 'lucide-react';
 import { useState } from 'react';
 
 export default function Layout({ children }) {
   const { agent, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -15,94 +29,122 @@ export default function Layout({ children }) {
   };
 
   const navItems = [
-    { label: 'Dashboard', path: '/', icon: BarChart3 },
+    { label: 'Dashboard', path: '/', icon: Home },
     { label: 'Leads', path: '/leads', icon: Users },
-    { label: 'Sequences', path: '/sequences', icon: MessageSquare },
-    { label: 'Analytics', path: '/analytics', icon: BarChart3 },
+    { label: 'Sequences', path: '/sequences', icon: Zap },
+    { label: 'Analytics', path: '/analytics', icon: TrendingUp },
     { label: 'Billing', path: '/billing', icon: CreditCard },
+    { label: 'Settings', path: '/settings', icon: Settings },
   ];
 
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      {/* Header */}
-      <header className="bg-white border-b-2 border-purple-100 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-700 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                <span className="text-white font-bold text-lg">LP</span>
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Dark Sidebar - Desktop */}
+      <aside
+        className={`hidden md:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 z-50 ${
+          sidebarOpen ? 'w-64' : 'w-20'
+        }`}
+      >
+        {/* Logo */}
+        <div className="h-20 flex items-center justify-center border-b border-gray-700 px-4">
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow flex-shrink-0">
+              <span className="text-white font-bold text-lg">LP</span>
+            </div>
+            {sidebarOpen && <span className="text-lg font-bold whitespace-nowrap">LeadPulse</span>}
+          </Link>
+        </div>
+
+        {/* Navigation Items */}
+        <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2">
+          {navItems.map(item => {
+            const Icon = item.icon;
+            const active = isActive(item.path);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
+                  active
+                    ? 'bg-purple-600 text-white shadow-lg'
+                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                }`}
+                title={!sidebarOpen ? item.label : ''}
+              >
+                <Icon size={20} className="flex-shrink-0" />
+                {sidebarOpen && <span className="font-medium text-sm">{item.label}</span>}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Profile Section */}
+        <div className="border-t border-gray-700 p-4">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200"
+            title={!sidebarOpen ? 'Logout' : ''}
+          >
+            <LogOut size={20} className="flex-shrink-0" />
+            {sidebarOpen && <span className="font-medium text-sm">Logout</span>}
+          </button>
+        </div>
+
+        {/* Toggle Sidebar Button */}
+        <div className="border-t border-gray-700 p-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="w-full flex items-center justify-center p-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200"
+            title="Toggle sidebar"
+          >
+            <Menu size={20} />
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'md:ml-20'}`}>
+        {/* Top Header */}
+        <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+          <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+
+            {/* Search Bar - Center */}
+            <div className="hidden sm:flex flex-1 max-w-md mx-4">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search leads, sequences..."
+                  className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
               </div>
-              <span className="text-xl font-bold text-gray-900 hidden sm:inline">LeadPulse</span>
-            </Link>
+            </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
-              {navItems.map(item => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 ${
-                      isActive(item.path)
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <Icon size={18} />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Right side */}
+            {/* Right Side - User Profile */}
             <div className="flex items-center space-x-4">
-              {/* User info - hidden on mobile */}
               <div className="hidden sm:flex items-center space-x-3 pl-4 border-l border-gray-200">
                 <div className="text-right">
                   <p className="text-sm font-semibold text-gray-900">{agent?.fullName || 'Agent'}</p>
-                  <p className="text-xs text-gray-600">{agent?.companyName || 'Company'}</p>
+                  <p className="text-xs text-gray-500">{agent?.companyName || 'Company'}</p>
                 </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
                   {agent?.fullName?.charAt(0) || 'A'}
                 </div>
               </div>
-
-              {/* Settings button */}
-              <Link
-                to="/settings"
-                className="p-2 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-300"
-                title="Settings"
-              >
-                <Settings size={20} />
-              </Link>
-
-              {/* Logout button */}
-              <button
-                onClick={handleLogout}
-                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300"
-                title="Logout"
-              >
-                <LogOut size={20} />
-              </button>
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 text-gray-600 hover:text-gray-900"
-              >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
             </div>
           </div>
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden pb-4 space-y-2 border-t border-gray-200 pt-4">
+            <nav className="md:hidden border-t border-gray-200 bg-white px-4 py-4 space-y-2">
               {navItems.map(item => {
                 const Icon = item.icon;
                 return (
@@ -110,7 +152,7 @@ export default function Layout({ children }) {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 ${
+                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg font-medium transition-all ${
                       isActive(item.path)
                         ? 'bg-purple-100 text-purple-700'
                         : 'text-gray-700 hover:bg-gray-100'
@@ -121,15 +163,24 @@ export default function Layout({ children }) {
                   </Link>
                 );
               })}
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-all"
+              >
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
             </nav>
           )}
-        </div>
-      </header>
+        </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
-      </main>
+        {/* Page Content */}
+        <main className="flex-1 overflow-auto bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
