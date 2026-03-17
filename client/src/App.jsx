@@ -14,7 +14,6 @@ import BillingPage from './pages/BillingPage';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
-import Header from './components/Header';
 
 function App() {
   const { token, getProfile } = useAuthStore();
@@ -27,72 +26,17 @@ function App() {
 
   return (
     <Router>
-      <Header />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         
         <Route element={<ProtectedRoute />}>
-          <Route
-            path="/"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <DashboardPage />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/leads"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <LeadsPage />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/sequences"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <SequencesPage />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/analytics"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <AnalyticsPage />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/billing"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <BillingPage />
-                </div>
-              </div>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                  <SettingsPage />
-                </div>
-              </div>
-            }
-          />
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/leads" element={<LeadsPage />} />
+          <Route path="/sequences" element={<SequencesPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
+          <Route path="/billing" element={<BillingPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />
