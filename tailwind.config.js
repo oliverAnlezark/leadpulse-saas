@@ -7,15 +7,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#2563eb',
-        secondary: '#1e40af',
-        accent: '#f59e0b',
+        primary: '#7c3aed',
+        'primary-dark': '#6d28d9',
+        'primary-light': '#a78bfa',
+        secondary: '#8b5cf6',
+        accent: '#ec4899',
         success: '#10b981',
-        danger: '#ef4444',
         warning: '#f59e0b',
+        error: '#ef4444',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Sora', 'system-ui', '-apple-system', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
+      },
+      spacing: {
+        '128': '32rem',
       },
     },
   },
