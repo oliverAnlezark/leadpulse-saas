@@ -12,7 +12,6 @@ import {
   Home,
   TrendingUp,
   Zap,
-  ChevronDown,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -39,26 +38,63 @@ export default function Layout({ children }) {
 
   const isActive = (path) => location.pathname === path;
 
+  const sidebarWidth = sidebarOpen ? '256px' : '72px';
+
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div style={{ display: 'flex', minHeight: '100vh', background: '#f9fafb' }}>
       {/* Dark Sidebar - Desktop */}
       <aside
-        className={`hidden md:flex flex-col fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 z-50 ${
-          sidebarOpen ? 'w-64' : 'w-20'
-        }`}
+        style={{
+          width: sidebarWidth,
+          minWidth: sidebarWidth,
+          background: 'linear-gradient(180deg, #111827 0%, #1f2937 100%)',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'fixed',
+          left: 0,
+          top: 0,
+          height: '100vh',
+          zIndex: 50,
+          transition: 'width 0.3s ease',
+          overflow: 'hidden',
+        }}
+        className="hidden md:flex"
       >
         {/* Logo */}
-        <div className="h-20 flex items-center justify-center border-b border-gray-700 px-4">
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow flex-shrink-0">
-              <span className="text-white font-bold text-lg">LP</span>
+        <div style={{
+          height: '72px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: sidebarOpen ? 'flex-start' : 'center',
+          borderBottom: '1px solid #374151',
+          padding: sidebarOpen ? '0 20px' : '0',
+          flexShrink: 0,
+        }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              boxShadow: '0 4px 12px rgba(124,58,237,0.4)',
+            }}>
+              <span style={{ color: 'white', fontWeight: 'bold', fontSize: '16px' }}>LP</span>
             </div>
-            {sidebarOpen && <span className="text-lg font-bold whitespace-nowrap">LeadPulse</span>}
+            {sidebarOpen && (
+              <span style={{ color: 'white', fontWeight: '700', fontSize: '18px', whiteSpace: 'nowrap' }}>
+                LeadPulse
+              </span>
+            )}
           </Link>
         </div>
 
         {/* Navigation Items */}
-        <nav className="flex-1 overflow-y-auto py-6 px-3 space-y-2">
+        <nav style={{ flex: 1, overflowY: 'auto', padding: '16px 12px' }}>
           {navItems.map(item => {
             const Icon = item.icon;
             const active = isActive(item.path);
@@ -66,85 +102,199 @@ export default function Layout({ children }) {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
-                  active
-                    ? 'bg-purple-600 text-white shadow-lg'
-                    : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                }`}
                 title={!sidebarOpen ? item.label : ''}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  marginBottom: '4px',
+                  textDecoration: 'none',
+                  background: active ? '#7c3aed' : 'transparent',
+                  color: active ? 'white' : '#d1d5db',
+                  transition: 'all 0.2s ease',
+                  justifyContent: sidebarOpen ? 'flex-start' : 'center',
+                }}
+                onMouseEnter={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = '#374151';
+                    e.currentTarget.style.color = 'white';
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!active) {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#d1d5db';
+                  }
+                }}
               >
-                <Icon size={20} className="flex-shrink-0" />
-                {sidebarOpen && <span className="font-medium text-sm">{item.label}</span>}
+                <Icon size={20} style={{ flexShrink: 0 }} />
+                {sidebarOpen && (
+                  <span style={{ fontWeight: '500', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                    {item.label}
+                  </span>
+                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* User Profile Section */}
-        <div className="border-t border-gray-700 p-4">
+        {/* Logout */}
+        <div style={{ borderTop: '1px solid #374151', padding: '12px' }}>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200"
             title={!sidebarOpen ? 'Logout' : ''}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '10px 14px',
+              borderRadius: '8px',
+              background: 'transparent',
+              color: '#d1d5db',
+              cursor: 'pointer',
+              border: 'none',
+              transition: 'all 0.2s ease',
+              justifyContent: sidebarOpen ? 'flex-start' : 'center',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = '#374151';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = '#d1d5db';
+            }}
           >
-            <LogOut size={20} className="flex-shrink-0" />
-            {sidebarOpen && <span className="font-medium text-sm">Logout</span>}
+            <LogOut size={20} style={{ flexShrink: 0 }} />
+            {sidebarOpen && <span style={{ fontWeight: '500', fontSize: '14px' }}>Logout</span>}
           </button>
         </div>
 
-        {/* Toggle Sidebar Button */}
-        <div className="border-t border-gray-700 p-4">
+        {/* Toggle Button */}
+        <div style={{ borderTop: '1px solid #374151', padding: '12px' }}>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="w-full flex items-center justify-center p-2 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-all duration-200"
-            title="Toggle sidebar"
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '8px',
+              borderRadius: '8px',
+              background: 'transparent',
+              color: '#9ca3af',
+              cursor: 'pointer',
+              border: 'none',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = '#374151';
+              e.currentTarget.style.color = 'white';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.color = '#9ca3af';
+            }}
           >
             <Menu size={20} />
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'md:ml-20'}`}>
+      {/* Main Content */}
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        marginLeft: sidebarWidth,
+        transition: 'margin-left 0.3s ease',
+      }} className="md:block">
         {/* Top Header */}
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-          <div className="px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <header style={{
+          background: 'white',
+          borderBottom: '1px solid #e5e7eb',
+          position: 'sticky',
+          top: 0,
+          zIndex: 40,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+        }}>
+          <div style={{
+            padding: '0 24px',
+            height: '64px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
+              style={{
+                display: 'none',
+                padding: '8px',
+                color: '#6b7280',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                borderRadius: '8px',
+              }}
+              className="md:hidden"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
-            {/* Search Bar - Center */}
-            <div className="hidden sm:flex flex-1 max-w-md mx-4">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search leads, sequences..."
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-              </div>
+            {/* Search Bar */}
+            <div style={{ flex: 1, maxWidth: '400px' }}>
+              <input
+                type="text"
+                placeholder="Search leads, sequences..."
+                style={{
+                  width: '100%',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  border: '1px solid #e5e7eb',
+                  fontSize: '14px',
+                  outline: 'none',
+                  color: '#374151',
+                }}
+                onFocus={e => e.target.style.borderColor = '#7c3aed'}
+                onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+              />
             </div>
 
-            {/* Right Side - User Profile */}
-            <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex items-center space-x-3 pl-4 border-l border-gray-200">
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-gray-900">{agent?.fullName || 'Agent'}</p>
-                  <p className="text-xs text-gray-500">{agent?.companyName || 'Company'}</p>
-                </div>
-                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md">
-                  {agent?.fullName?.charAt(0) || 'A'}
-                </div>
+            {/* User Profile */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '16px', borderLeft: '1px solid #e5e7eb' }}>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: '14px', fontWeight: '600', color: '#111827', margin: 0 }}>
+                  {agent?.fullName || 'Agent'}
+                </p>
+                <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+                  {agent?.companyName || 'Company'}
+                </p>
+              </div>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                background: 'linear-gradient(135deg, #7c3aed, #6d28d9)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '14px',
+                boxShadow: '0 2px 8px rgba(124,58,237,0.3)',
+              }}>
+                {agent?.fullName?.charAt(0)?.toUpperCase() || 'A'}
               </div>
             </div>
           </div>
 
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
-            <nav className="md:hidden border-t border-gray-200 bg-white px-4 py-4 space-y-2">
+            <nav style={{ borderTop: '1px solid #e5e7eb', background: 'white', padding: '12px 16px' }}>
               {navItems.map(item => {
                 const Icon = item.icon;
                 return (
@@ -152,11 +302,18 @@ export default function Layout({ children }) {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg font-medium transition-all ${
-                      isActive(item.path)
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      marginBottom: '4px',
+                      textDecoration: 'none',
+                      background: isActive(item.path) ? '#f3e8ff' : 'transparent',
+                      color: isActive(item.path) ? '#7c3aed' : '#374151',
+                      fontWeight: '500',
+                    }}
                   >
                     <Icon size={18} />
                     <span>{item.label}</span>
@@ -165,7 +322,19 @@ export default function Layout({ children }) {
               })}
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center space-x-3 px-4 py-2 rounded-lg font-medium text-red-600 hover:bg-red-50 transition-all"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  color: '#ef4444',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: '500',
+                }}
               >
                 <LogOut size={18} />
                 <span>Logout</span>
@@ -175,8 +344,8 @@ export default function Layout({ children }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main style={{ flex: 1, overflowY: 'auto', background: '#f9fafb' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px 24px' }}>
             {children}
           </div>
         </main>
