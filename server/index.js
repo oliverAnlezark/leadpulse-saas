@@ -108,7 +108,7 @@ app.use((err, req, res, next) => {
 });
 
 // Serve index.html for SPA routing
-app.get('*', (req, res) => {
+app.get(/^\/(?!api\/).*/, (req, res) => {
   const indexPath = path.join(distPath, 'index.html');
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
@@ -116,7 +116,6 @@ app.get('*', (req, res) => {
     res.status(404).json({ error: 'Route not found' });
   }
 });
-
 
 // 404 handler
 app.use((req, res) => {
