@@ -62,15 +62,17 @@ export default function LeadsPage() {
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-lg">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Leads</h1>
-          <p className="text-purple-100">Manage and track your lead pipeline</p>
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 text-white shadow-lg">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Leads</h1>
+            <p className="text-purple-100 text-lg">Manage and track your lead pipeline</p>
+          </div>
+          <button className="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 font-semibold flex-shrink-0 whitespace-nowrap">
+            <Plus size={20} />
+            <span>Import Leads</span>
+          </button>
         </div>
-        <button className="bg-white text-purple-600 hover:bg-gray-100 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0 font-semibold">
-          <Plus size={20} />
-          <span>Import Leads</span>
-        </button>
       </div>
 
       {/* Stats Cards */}
