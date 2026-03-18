@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { Link } from 'react-router-dom';
 import {
   Trash2,
   Eye,
@@ -11,7 +10,6 @@ import {
   Home,
   Calendar,
   DollarSign,
-  Plus,
   Search,
   ChevronDown,
 } from 'lucide-react';
@@ -92,18 +90,9 @@ export default function LeadsPage() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
-          <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
-        </div>
-        <Link
-          to="/import"
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0 no-underline"
-        >
-          <Plus size={20} />
-          <span className="font-semibold">Import Leads</span>
-        </Link>
+      <div>
+        <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
+        <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
       </div>
 
       {/* Search and Filter Bar */}
