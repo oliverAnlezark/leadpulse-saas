@@ -64,8 +64,8 @@ export default function LeadsPage() {
       {/* Hero Banner - Exactly like Sequences */}
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-lg">
         <div>
-          <h1 className="text-4xl font-bold">Leads</h1>
-          <p className="text-purple-100 mt-2">Manage and track your lead pipeline</p>
+          <h1 className="text-4xl font-bold text-white">Leads</h1>
+          <p className="text-white text-base mt-2">Manage and track your lead pipeline</p>
         </div>
         <button className="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 font-semibold flex-shrink-0 whitespace-nowrap">
           <Plus size={20} />
