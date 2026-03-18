@@ -65,7 +65,7 @@ export default function LeadsPage() {
       <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-lg">
         <div>
           <h1 className="text-4xl font-bold mb-2">Leads</h1>
-          <p className="text-purple-100 text-lg">Manage and track your lead pipeline</p>
+          <p className="text-purple-100">Manage and track your lead pipeline</p>
         </div>
         <button className="bg-white text-purple-600 hover:bg-gray-100 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0 font-semibold">
           <Plus size={20} />
@@ -77,38 +77,38 @@ export default function LeadsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-gray-600 uppercase">Total Leads</span>
+            <span className="text-xs font-semibold text-gray-600 uppercase">Total Leads</span>
             <span className="text-2xl">📊</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
-          <p className="text-sm text-gray-500 mt-2">All leads in pipeline</p>
+          <p className="text-xs text-gray-500 mt-2">All leads in pipeline</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-gray-600 uppercase">New</span>
+            <span className="text-xs font-semibold text-gray-600 uppercase">New</span>
             <span className="text-2xl">✨</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">{stats.new}</div>
-          <p className="text-sm text-gray-500 mt-2">Newly received</p>
+          <p className="text-xs text-gray-500 mt-2">Newly received</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-gray-600 uppercase">Contacted</span>
+            <span className="text-xs font-semibold text-gray-600 uppercase">Contacted</span>
             <span className="text-2xl">📞</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">{stats.contacted}</div>
-          <p className="text-sm text-gray-500 mt-2">Already reached out</p>
+          <p className="text-xs text-gray-500 mt-2">Already reached out</p>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-semibold text-gray-600 uppercase">Qualified</span>
+            <span className="text-xs font-semibold text-gray-600 uppercase">Qualified</span>
             <span className="text-2xl">✅</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">{stats.qualified}</div>
-          <p className="text-sm text-gray-500 mt-2">Ready to convert</p>
+          <p className="text-xs text-gray-500 mt-2">Ready to convert</p>
         </div>
       </div>
 
@@ -155,8 +155,8 @@ export default function LeadsPage() {
         </div>
       ) : filteredLeads.length === 0 ? (
         <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
-          <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-            <Eye className="text-gray-400" size={32} />
+          <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <Eye className="text-purple-600" size={32} />
           </div>
           <p className="text-gray-600 text-lg font-medium">No leads found</p>
           <p className="text-gray-500 text-sm mt-2">Start by importing leads from a file or connecting your CRM</p>
@@ -184,7 +184,7 @@ export default function LeadsPage() {
                           {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900">{lead.firstName} {lead.lastName}</p>
+                          <p className="font-semibold text-gray-900 text-sm">{lead.firstName} {lead.lastName}</p>
                           <p className="text-xs text-gray-500">{lead.leadSource || 'Unknown'}</p>
                         </div>
                       </div>
@@ -194,13 +194,13 @@ export default function LeadsPage() {
                         {lead.email && (
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Mail size={14} className="text-gray-400" />
-                            <span>{lead.email}</span>
+                            <span className="text-xs">{lead.email}</span>
                           </div>
                         )}
                         {lead.phone && (
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <Phone size={14} className="text-gray-400" />
-                            <span>{lead.phone}</span>
+                            <span className="text-xs">{lead.phone}</span>
                           </div>
                         )}
                       </div>
@@ -208,7 +208,7 @@ export default function LeadsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <MapPin size={14} className="text-gray-400" />
-                        <span>{lead.propertyInterest || '-'}</span>
+                        <span className="text-xs">{lead.propertyInterest || '-'}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -225,7 +225,7 @@ export default function LeadsPage() {
                       </select>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{lead.leadSource || '-'}</span>
+                      <span className="text-xs text-gray-600">{lead.leadSource || '-'}</span>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
