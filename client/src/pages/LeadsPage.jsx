@@ -478,6 +478,7 @@ export default function LeadsPage() {
                 );
               })}
             </tbody>
+          </table>
         </div>
       )}
       </div>
