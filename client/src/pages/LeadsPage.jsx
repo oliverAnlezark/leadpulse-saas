@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { Search, Filter, Eye, Trash2, Mail, Phone, MapPin, Plus, X } from 'lucide-react';
+import { Plus, Trash2, Eye, X } from 'lucide-react';
 
 export default function LeadsPage() {
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
@@ -61,18 +61,16 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 text-white shadow-lg">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Leads</h1>
-            <p className="text-purple-100 text-lg">Manage and track your lead pipeline</p>
-          </div>
-          <button className="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 font-semibold flex-shrink-0 whitespace-nowrap">
-            <Plus size={20} />
-            <span>Import Leads</span>
-          </button>
+      {/* Hero Banner - Exactly like Sequences */}
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 rounded-2xl p-8 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-lg">
+        <div>
+          <h1 className="text-4xl font-bold">Leads</h1>
+          <p className="text-purple-100 mt-2">Manage and track your lead pipeline</p>
         </div>
+        <button className="bg-white text-purple-600 hover:bg-purple-50 px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 font-semibold flex-shrink-0 whitespace-nowrap">
+          <Plus size={20} />
+          <span>Import Leads</span>
+        </button>
       </div>
 
       {/* Stats Cards */}
@@ -80,7 +78,7 @@ export default function LeadsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-gray-600 uppercase">Total Leads</span>
-            <span className="text-2xl">📊</span>
+            <span className="text-2xl">👥</span>
           </div>
           <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
           <p className="text-xs text-gray-500 mt-2">All leads in pipeline</p>
@@ -118,18 +116,16 @@ export default function LeadsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
               type="text"
               placeholder="Search leads by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
           <div className="flex gap-2 items-center flex-wrap">
-            <Filter size={18} className="text-gray-400" />
             {['all', ...statuses].map((status) => (
               <button
                 key={status}
@@ -147,7 +143,7 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      {/* Leads Table */}
+      {/* Leads List */}
       {loading ? (
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
@@ -170,8 +166,8 @@ export default function LeadsPage() {
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Contact</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Property</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Phone</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Source</th>
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
@@ -185,33 +181,14 @@ export default function LeadsPage() {
                         <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-center text-white font-semibold text-sm">
                           {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
                         </div>
-                        <div>
-                          <p className="font-semibold text-gray-900 text-sm">{lead.firstName} {lead.lastName}</p>
-                          <p className="text-xs text-gray-500">{lead.leadSource || 'Unknown'}</p>
-                        </div>
+                        <p className="font-semibold text-gray-900 text-sm">{lead.firstName} {lead.lastName}</p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="space-y-1">
-                        {lead.email && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Mail size={14} className="text-gray-400" />
-                            <span className="text-xs">{lead.email}</span>
-                          </div>
-                        )}
-                        {lead.phone && (
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
-                            <Phone size={14} className="text-gray-400" />
-                            <span className="text-xs">{lead.phone}</span>
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-sm text-gray-600">{lead.email || '-'}</p>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <MapPin size={14} className="text-gray-400" />
-                        <span className="text-xs">{lead.propertyInterest || '-'}</span>
-                      </div>
+                      <p className="text-sm text-gray-600">{lead.phone || '-'}</p>
                     </td>
                     <td className="px-6 py-4">
                       <select
@@ -227,7 +204,7 @@ export default function LeadsPage() {
                       </select>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-xs text-gray-600">{lead.leadSource || '-'}</span>
+                      <p className="text-sm text-gray-600">{lead.leadSource || '-'}</p>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">
