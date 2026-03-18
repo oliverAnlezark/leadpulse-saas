@@ -1,17 +1,60 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { Trash2, Eye, Filter, X, Mail, Phone, Home, Calendar, DollarSign, Search, ChevronDown } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
+import {
+  Trash2,
+  Eye,
+  Filter,
+  X,
+  Mail,
+  Phone,
+  Home,
+  Calendar,
+  DollarSign,
+  Search,
+  ChevronDown,
+  Users,
+  TrendingUp,
+  CheckCircle,
+  MessageSquare,
+  Clock,
+  ArrowRight,
+  Zap,
+} from 'lucide-react';
 
 export default function LeadsPage() {
+  const { agent } = useAuthStore();
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
   const [filter, setFilter] = useState('all');
   const [selectedLead, setSelectedLead] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [analytics, setAnalytics] = useState(null);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const status = filter === 'all' ? null : filter;
     getLeads(status);
   }, [filter]);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const response = await fetch('/api/analytics/dashboard', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setAnalytics(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch analytics:', error);
+      }
+    };
+
+    if (token) {
+      fetchAnalytics();
+    }
+  }, [token]);
 
   const handleStatusChange = async (leadId, newStatus) => {
     try {
@@ -60,13 +103,85 @@ export default function LeadsPage() {
 
   const statuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
 
-  return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div>
-        <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
-        <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
+  const StatCard = ({ icon: Icon, label, value, change, color = 'purple' }) => {
+    const colorClasses = {
+      purple: 'from-purple-500 to-purple-600',
+      green: 'from-green-500 to-green-600',
+      blue: 'from-blue-500 to-blue-600',
+      orange: 'from-orange-500 to-orange-600',
+    };
+
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all duration-300">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <p className="text-gray-600 text-sm font-medium mb-2">{label}</p>
+            <p className="text-3xl font-bold text-gray-900">{value}</p>
+            {change && (
+              <p className="text-green-600 text-sm font-medium mt-3 flex items-center space-x-1">
+                <TrendingUp size={14} />
+                <span>{change}</span>
+              </p>
+            )}
+          </div>
+          <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 shadow-lg`}>
+            <Icon className="text-white" size={28} />
+          </div>
+        </div>
       </div>
+    );
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
+        <h1 className="text-4xl font-bold mb-2">Your Leads Pipeline 📋</h1>
+        <p className="text-purple-100 text-lg">Manage and track all your leads in one place</p>
+      </div>
+
+      {/* Key Metrics Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map(i => (
+            <div
+              key={i}
+              className="bg-gradient-to-br from-gray-200 to-gray-100 rounded-xl h-40 animate-pulse"
+            ></div>
+          ))}
+        </div>
+      ) : analytics ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StatCard
+            icon={Users}
+            label="Total Leads"
+            value={analytics.leads.total}
+            change={`${analytics.leads.qualified} qualified`}
+            color="purple"
+          />
+          <StatCard
+            icon={CheckCircle}
+            label="Converted"
+            value={analytics.leads.converted}
+            change={`${analytics.leads.hot} hot leads`}
+            color="green"
+          />
+          <StatCard
+            icon={MessageSquare}
+            label="Messages Sent"
+            value={analytics.communications.reduce((sum, c) => sum + c.sent, 0)}
+            change={`${analytics.communications.reduce((sum, c) => sum + c.delivered, 0)} delivered`}
+            color="blue"
+          />
+          <StatCard
+            icon={Clock}
+            label="Avg Response"
+            value={`${analytics.responseTime.average}m`}
+            change={`${analytics.responseTime.min}m - ${analytics.responseTime.max}m`}
+            color="orange"
+          />
+        </div>
+      ) : null}
 
       {/* Search and Filter Bar */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -104,14 +219,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Leads List */}
-      {loading ? (
-        <div className="flex items-center justify-center h-96">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
-            <p className="text-gray-600">Loading leads...</p>
-          </div>
-        </div>
-      ) : filteredLeads.length === 0 ? (
+      {filteredLeads.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
           <Eye size={48} className="mx-auto text-gray-400 mb-4" />
           <p className="text-gray-600 text-lg">No leads found</p>
