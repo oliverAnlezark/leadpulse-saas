@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { Search, Filter, Eye, Trash2, Mail, Phone, MapPin } from 'lucide-react';
+import { Search, Filter, Eye, Trash2, Mail, Phone, MapPin, Plus, X } from 'lucide-react';
 
 export default function LeadsPage() {
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
@@ -50,248 +50,93 @@ export default function LeadsPage() {
 
   const getStatusColor = (status) => {
     const colors = {
-      new: { bg: '#dbeafe', text: '#1e40af', label: 'New' },
-      contacted: { bg: '#e9d5ff', text: '#6b21a8', label: 'Contacted' },
-      qualified: { bg: '#dcfce7', text: '#15803d', label: 'Qualified' },
-      converted: { bg: '#d1fae5', text: '#065f46', label: 'Converted' },
-      lost: { bg: '#fee2e2', text: '#991b1b', label: 'Lost' },
+      new: 'bg-blue-100 text-blue-700',
+      contacted: 'bg-purple-100 text-purple-700',
+      qualified: 'bg-green-100 text-green-700',
+      converted: 'bg-emerald-100 text-emerald-700',
+      lost: 'bg-red-100 text-red-700',
     };
     return colors[status] || colors.new;
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#f8f9fa' }}>
-      {/* Hero Section */}
-      <div
-        style={{
-          background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-          color: 'white',
-          padding: '40px',
-          borderRadius: '16px',
-          margin: '24px',
-          marginBottom: '32px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 style={{ fontSize: '32px', fontWeight: 'bold', marginBottom: '8px' }}>Leads</h1>
-          <p style={{ fontSize: '16px', opacity: 0.9 }}>Manage and track your lead pipeline</p>
+          <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
+          <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
         </div>
-        <button
-          style={{
-            background: 'white',
-            color: '#7c3aed',
-            border: 'none',
-            padding: '12px 24px',
-            borderRadius: '8px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            fontSize: '14px',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = '#f3f4f6')}
-          onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
-        >
-          + Import Leads
+        <button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0">
+          <Plus size={20} />
+          <span className="font-semibold">Import Leads</span>
         </button>
       </div>
 
       {/* Stats Cards */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
-          padding: '0 24px',
-          marginBottom: '32px',
-        }}
-      >
-        <div
-          style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            border: '1px solid #e5e7eb',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                background: '#f3e8ff',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-              }}
-            >
-              📊
-            </div>
-            <span style={{ color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Total Leads</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-gray-600 uppercase">Total Leads</span>
+            <span className="text-2xl">📊</span>
           </div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{stats.total}</div>
-          <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>All leads in pipeline</p>
+          <div className="text-3xl font-bold text-gray-900">{stats.total}</div>
+          <p className="text-sm text-gray-500 mt-2">All leads in pipeline</p>
         </div>
 
-        <div
-          style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            border: '1px solid #e5e7eb',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                background: '#dbeafe',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-              }}
-            >
-              ✨
-            </div>
-            <span style={{ color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>New</span>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-gray-600 uppercase">New</span>
+            <span className="text-2xl">✨</span>
           </div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{stats.new}</div>
-          <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>Newly received</p>
+          <div className="text-3xl font-bold text-gray-900">{stats.new}</div>
+          <p className="text-sm text-gray-500 mt-2">Newly received</p>
         </div>
 
-        <div
-          style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            border: '1px solid #e5e7eb',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                background: '#e9d5ff',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-              }}
-            >
-              📞
-            </div>
-            <span style={{ color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Contacted</span>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-gray-600 uppercase">Contacted</span>
+            <span className="text-2xl">📞</span>
           </div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{stats.contacted}</div>
-          <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>Already reached out</p>
+          <div className="text-3xl font-bold text-gray-900">{stats.contacted}</div>
+          <p className="text-sm text-gray-500 mt-2">Already reached out</p>
         </div>
 
-        <div
-          style={{
-            background: 'white',
-            padding: '20px',
-            borderRadius: '12px',
-            border: '1px solid #e5e7eb',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                background: '#dcfce7',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '20px',
-              }}
-            >
-              ✅
-            </div>
-            <span style={{ color: '#6b7280', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase' }}>Qualified</span>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold text-gray-600 uppercase">Qualified</span>
+            <span className="text-2xl">✅</span>
           </div>
-          <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827' }}>{stats.qualified}</div>
-          <p style={{ color: '#9ca3af', fontSize: '12px', marginTop: '4px' }}>Ready to convert</p>
+          <div className="text-3xl font-bold text-gray-900">{stats.qualified}</div>
+          <p className="text-sm text-gray-500 mt-2">Ready to convert</p>
         </div>
       </div>
 
       {/* Search and Filter Bar */}
-      <div style={{ padding: '0 24px', marginBottom: '24px' }}>
-        <div
-          style={{
-            background: 'white',
-            border: '1px solid #e5e7eb',
-            borderRadius: '12px',
-            padding: '16px',
-            display: 'flex',
-            gap: '12px',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <div style={{ position: 'relative', flex: 1, minWidth: '250px' }}>
-            <Search
-              size={18}
-              style={{
-                position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#9ca3af',
-              }}
-            />
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-3 text-gray-400" size={18} />
             <input
               type="text"
               placeholder="Search leads by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                paddingLeft: '40px',
-                paddingRight: '12px',
-                paddingTop: '8px',
-                paddingBottom: '8px',
-                border: 'none',
-                outline: 'none',
-                fontSize: '14px',
-                background: 'transparent',
-              }}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <Filter size={18} style={{ color: '#6b7280' }} />
+          <div className="flex gap-2 items-center flex-wrap">
+            <Filter size={18} className="text-gray-400" />
             {['all', ...statuses].map((status) => (
               <button
                 key={status}
                 onClick={() => setFilter(status)}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '8px',
-                  border: 'none',
-                  background: filter === status ? '#7c3aed' : '#f3f4f6',
-                  color: filter === status ? 'white' : '#374151',
-                  fontWeight: '500',
-                  fontSize: '13px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  if (filter !== status) e.currentTarget.style.background = '#e5e7eb';
-                }}
-                onMouseLeave={(e) => {
-                  if (filter !== status) e.currentTarget.style.background = '#f3f4f6';
-                }}
+                className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                  filter === status
+                    ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
               >
                 {status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
@@ -300,127 +145,77 @@ export default function LeadsPage() {
         </div>
       </div>
 
-      {/* Leads List */}
-      <div style={{ padding: '0 24px', marginBottom: '24px', flex: 1, overflow: 'auto' }}>
+      {/* Leads Table */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-          <div
-            style={{
-              display: 'inline-block',
-              width: '48px',
-              height: '48px',
-              border: '4px solid #e5e7eb',
-              borderTop: '4px solid #7c3aed',
-              borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
-            }}
-          />
-          <p style={{ color: '#6b7280', marginTop: '16px' }}>Loading leads...</p>
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+            <p className="text-gray-600">Loading leads...</p>
+          </div>
         </div>
       ) : filteredLeads.length === 0 ? (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          border: '1px solid #e5e7eb',
-          padding: '48px 20px',
-          textAlign: 'center',
-        }}>
-          <Eye style={{ width: '48px', height: '48px', color: '#d1d5db', margin: '0 auto 16px' }} />
-          <p style={{ color: '#6b7280', fontSize: '18px' }}>No leads found</p>
-          <p style={{ color: '#9ca3af', marginTop: '8px' }}>Start by importing leads from a file or connecting your CRM</p>
+        <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-12 text-center">
+          <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <Eye className="text-gray-400" size={32} />
+          </div>
+          <p className="text-gray-600 text-lg font-medium">No leads found</p>
+          <p className="text-gray-500 text-sm mt-2">Start by importing leads from a file or connecting your CRM</p>
         </div>
       ) : (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          border: '1px solid #e5e7eb',
-          overflow: 'hidden',
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Name</th>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Contact</th>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Property</th>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Status</th>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Source</th>
-                <th style={{ padding: '16px', textAlign: 'left', fontSize: '13px', fontWeight: '600', color: '#6b7280', textTransform: 'uppercase' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredLeads.map(lead => {
-                const statusColor = getStatusColor(lead.leadStatus);
-                return (                  <tr
-                    key={lead.id}
-                    style={{
-                      borderBottom: '1px solid #e5e7eb',
-                      transition: 'background 0.2s',
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#f9fafb')}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'white')}
-                  >
-                    <td style={{ padding: '16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div
-                          style={{
-                            width: '40px',
-                            height: '40px',
-                            background: 'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)',
-                            borderRadius: '50%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '14px',
-                          }}
-                        >
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-200">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Contact</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Property</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Source</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredLeads.map((lead) => (
+                  <tr key={lead.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-700 flex items-center justify-center text-white font-semibold text-sm">
                           {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
                         </div>
                         <div>
-                          <p style={{ fontWeight: '600', color: '#111827', fontSize: '14px' }}>
-                            {lead.firstName} {lead.lastName}
-                          </p>
-                          <p style={{ fontSize: '12px', color: '#9ca3af' }}>{lead.leadSource || 'Unknown'}</p>
+                          <p className="font-semibold text-gray-900">{lead.firstName} {lead.lastName}</p>
+                          <p className="text-xs text-gray-500">{lead.leadSource || 'Unknown'}</p>
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: '16px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                    <td className="px-6 py-4">
+                      <div className="space-y-1">
                         {lead.email && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6b7280' }}>
-                            <Mail size={14} />
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Mail size={14} className="text-gray-400" />
                             <span>{lead.email}</span>
                           </div>
                         )}
                         {lead.phone && (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6b7280' }}>
-                            <Phone size={14} />
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <Phone size={14} className="text-gray-400" />
                             <span>{lead.phone}</span>
                           </div>
                         )}
                       </div>
                     </td>
-                    <td style={{ padding: '16px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6b7280' }}>
-                        <MapPin size={14} />
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <MapPin size={14} className="text-gray-400" />
                         <span>{lead.propertyInterest || '-'}</span>
                       </div>
                     </td>
-                    <td style={{ padding: '16px' }}>
+                    <td className="px-6 py-4">
                       <select
                         value={lead.leadStatus}
                         onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                        style={{
-                          padding: '6px 12px',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          fontWeight: '500',
-                          border: 'none',
-                          cursor: 'pointer',
-                          background: statusColor.bg,
-                          color: statusColor.text,
-                        }}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold border-0 cursor-pointer ${getStatusColor(lead.leadStatus)}`}
                       >
                         {statuses.map((status) => (
                           <option key={status} value={status}>
@@ -429,157 +224,80 @@ export default function LeadsPage() {
                         ))}
                       </select>
                     </td>
-                    <td style={{ padding: '16px' }}>
-                      <span style={{ fontSize: '13px', color: '#6b7280' }}>{lead.leadSource || '-'}</span>
+                    <td className="px-6 py-4">
+                      <span className="text-sm text-gray-600">{lead.leadSource || '-'}</span>
                     </td>
-                    <td style={{ padding: '16px' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                    <td className="px-6 py-4">
+                      <div className="flex gap-2">
                         <button
                           onClick={() => setSelectedLead(lead)}
-                          style={{
-                            padding: '6px 12px',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: '#6b7280',
-                            transition: 'all 0.2s',
-                            borderRadius: '6px',
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = '#f3f4f6';
-                            e.currentTarget.style.color = '#111827';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'none';
-                            e.currentTarget.style.color = '#6b7280';
-                          }}
+                          className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           onClick={() => handleDelete(lead.id)}
-                          style={{
-                            padding: '6px 12px',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: '#dc2626',
-                            transition: 'all 0.2s',
-                            borderRadius: '6px',
-                          }}
-                          onMouseEnter={(e) => (e.currentTarget.style.background = '#fee2e2')}
-                          onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
+                          className="p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
-      </div>
 
       {/* Lead Detail Modal */}
       {selectedLead && (
-        <div style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 50,
-          padding: '16px',
-        }}>
-          <div
-            style={{
-              background: 'white',
-              borderRadius: '12px',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-              maxWidth: '600px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-            }}
-          >
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
-                color: 'white',
-                padding: '24px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                position: 'sticky',
-                top: 0,
-              }}
-            >
-              <h2 style={{ fontSize: '20px', fontWeight: 'bold' }}>Lead Details</h2>
+            <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 flex justify-between items-center sticky top-0">
+              <h2 className="text-2xl font-bold">Lead Details</h2>
               <button
                 onClick={() => setSelectedLead(null)}
-                style={{
-                  padding: '8px',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: 'white',
-                  fontSize: '24px',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'none')}
+                className="p-2 hover:bg-purple-500 rounded-lg transition-colors"
               >
-                ×
+                <X size={24} />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>First Name</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.firstName}</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">First Name</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.firstName}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Last Name</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.lastName}</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Last Name</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.lastName}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Email</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.email || '-'}</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Email</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.email || '-'}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Phone</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.phone || '-'}</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Phone</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.phone || '-'}</p>
                 </div>
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Property Interest</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.propertyInterest || '-'}</p>
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Property Interest</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.propertyInterest || '-'}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Status</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Status</label>
                   <select
                     value={selectedLead.leadStatus}
                     onChange={(e) => {
                       handleStatusChange(selectedLead.id, e.target.value);
                       setSelectedLead({ ...selectedLead, leadStatus: e.target.value });
                     }}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      color: '#111827',
-                      outline: 'none',
-                      background: 'white',
-                      cursor: 'pointer',
-                    }}
+                    className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   >
                     {statuses.map((status) => (
                       <option key={status} value={status}>
@@ -589,29 +307,21 @@ export default function LeadsPage() {
                   </select>
                 </div>
                 <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '4px', textTransform: 'uppercase' }}>Source</p>
-                  <p style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{selectedLead.leadSource || '-'}</p>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Source</label>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.leadSource || '-'}</p>
                 </div>
               </div>
 
               {selectedLead.notes && (
-                <div>
-                  <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: '600', marginBottom: '8px', textTransform: 'uppercase' }}>Notes</p>
-                  <p style={{ color: '#111827', fontSize: '14px', lineHeight: '1.6' }}>{selectedLead.notes}</p>
+                <div className="border-t border-gray-200 pt-6">
+                  <label className="block text-xs font-semibold text-gray-600 uppercase mb-2">Notes</label>
+                  <p className="text-gray-700 leading-relaxed">{selectedLead.notes}</p>
                 </div>
               )}
             </div>
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
     </div>
   );
 }
