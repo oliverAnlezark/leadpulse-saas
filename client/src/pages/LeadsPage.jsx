@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import {
-  Trash2,
-  Eye,
-  Filter,
-  X,
-  Mail,
-  Phone,
-  Home,
-  Calendar,
-  DollarSign,
-  Search,
-  ChevronDown,
-} from 'lucide-react';
+import { Trash2, Eye, Filter, X, Mail, Phone, Home, Calendar, DollarSign, Search, ChevronDown } from 'lucide-react';
 
 export default function LeadsPage() {
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
@@ -46,24 +34,9 @@ export default function LeadsPage() {
   const getStatusColor = (status) => {
     const colors = {
       new: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', badge: 'bg-blue-100 text-blue-700' },
-      contacted: {
-        bg: 'bg-purple-50',
-        border: 'border-purple-200',
-        text: 'text-purple-700',
-        badge: 'bg-purple-100 text-purple-700',
-      },
-      qualified: {
-        bg: 'bg-green-50',
-        border: 'border-green-200',
-        text: 'text-green-700',
-        badge: 'bg-green-100 text-green-700',
-      },
-      converted: {
-        bg: 'bg-emerald-50',
-        border: 'border-emerald-200',
-        text: 'text-emerald-700',
-        badge: 'bg-emerald-100 text-emerald-700',
-      },
+      contacted: { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', badge: 'bg-purple-100 text-purple-700' },
+      qualified: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', badge: 'bg-green-100 text-green-700' },
+      converted: { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', badge: 'bg-emerald-100 text-emerald-700' },
       lost: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', badge: 'bg-red-100 text-red-700' },
     };
     return colors[status] || colors.new;
@@ -88,8 +61,8 @@ export default function LeadsPage() {
   const statuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="space-y-6">
+      {/* Header Section */}
       <div>
         <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
         <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
@@ -142,7 +115,7 @@ export default function LeadsPage() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
           <Eye size={48} className="mx-auto text-gray-400 mb-4" />
           <p className="text-gray-600 text-lg">No leads found</p>
-          <p className="text-gray-500 mt-2">Start by creating a new lead or importing from a file</p>
+          <p className="text-gray-500 mt-2">Start by importing leads from a file or connecting your CRM</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
