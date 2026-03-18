@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Trash2,
   Eye,
@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 
 export default function LeadsPage() {
-  const navigate = useNavigate();
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
   const [filter, setFilter] = useState('all');
   const [selectedLead, setSelectedLead] = useState(null);
@@ -98,13 +97,13 @@ export default function LeadsPage() {
           <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
           <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
         </div>
-        <button
-          onClick={() => navigate('/import')}
-          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0"
+        <Link
+          to="/import"
+          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0 no-underline"
         >
           <Plus size={20} />
           <span className="font-semibold">Import Leads</span>
-        </button>
+        </Link>
       </div>
 
       {/* Search and Filter Bar */}
