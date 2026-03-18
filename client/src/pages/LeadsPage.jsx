@@ -92,18 +92,18 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg flex items-center justify-between">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Leads</h1>
-          <p className="text-purple-100 text-lg">Manage and track your lead pipeline</p>
+          <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
+          <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
         </div>
         <button
           onClick={() => navigate('/import')}
-          className="flex items-center space-x-2 bg-white hover:bg-gray-100 text-purple-700 px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+          className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-xl flex-shrink-0"
         >
           <Plus size={20} />
-          <span>Import Leads</span>
+          <span className="font-semibold">Import Leads</span>
         </button>
       </div>
 
@@ -111,36 +111,38 @@ export default function LeadsPage() {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
         <div className="flex-1 w-full sm:w-auto">
           <div className="relative">
-            <Search size={18} className="absolute left-3 top-3 text-gray-400" />
+            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
             <input
               type="text"
               placeholder="Search leads by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
-          <Filter size={18} className="text-gray-600 flex-shrink-0" />
-          {['all', 'new', 'contacted', 'qualified', 'converted'].map(status => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 whitespace-nowrap text-sm ${
-                filter === status
-                  ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-md'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-            </button>
-          ))}
+        <div className="flex items-center space-x-2">
+          <Filter size={20} className="text-gray-600" />
+          <div className="flex space-x-2">
+            {['all', ...statuses].map(status => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  filter === status
+                    ? 'bg-purple-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Kanban Board View */}
+      {/* Leads List */}
       {loading ? (
         <div className="flex items-center justify-center h-96">
           <div className="text-center">
@@ -149,217 +151,162 @@ export default function LeadsPage() {
           </div>
         </div>
       ) : filteredLeads.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <Eye size={48} className="mx-auto text-gray-300 mb-4" />
-          <p className="text-gray-600 text-lg font-medium">No leads found</p>
-          <p className="text-gray-500 text-sm mt-2">
-            {searchQuery ? 'Try adjusting your search' : 'Start by creating a new lead or connecting your CRM'}
-          </p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
+          <Eye size={48} className="mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-600 text-lg">No leads found</p>
+          <p className="text-gray-500 mt-2">Start by creating a new lead or importing from a file</p>
         </div>
       ) : (
-        <div className="overflow-x-auto pb-4">
-          <div className="flex gap-6 min-w-max">
-            {statuses.map(status => {
-              const statusLeads = filteredLeads.filter(lead => lead.status === status);
-              const colors = getStatusColor(status);
-
-              return (
-                <div key={status} className="flex-shrink-0 w-80">
-                  {/* Column Header */}
-                  <div className={`rounded-t-xl border-2 ${colors.border} ${colors.bg} p-4 flex items-center justify-between`}>
-                    <div className="flex items-center space-x-2">
-                      <h3 className={`font-bold text-sm uppercase tracking-wider ${colors.text}`}>
-                        {status.charAt(0).toUpperCase() + status.slice(1)}
-                      </h3>
-                      <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${colors.badge}`}>
-                        {statusLeads.length}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Cards Container */}
-                  <div className={`rounded-b-xl border-2 border-t-0 ${colors.border} ${colors.bg} p-4 min-h-96 space-y-3`}>
-                    {statusLeads.length === 0 ? (
-                      <div className="flex items-center justify-center h-32 text-gray-400">
-                        <p className="text-sm text-center">No leads in this stage</p>
-                      </div>
-                    ) : (
-                      statusLeads.map(lead => (
-                        <div
-                          key={lead.id}
-                          className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md hover:border-purple-300 transition-all duration-200 cursor-pointer group"
-                          onClick={() => setSelectedLead(lead)}
-                        >
-                          {/* Lead Header */}
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="flex-1">
-                              <h4 className="font-bold text-gray-900 text-sm group-hover:text-purple-600 transition-colors">
-                                {lead.firstName} {lead.lastName}
-                              </h4>
-                              <p className="text-xs text-gray-500 mt-0.5">{lead.email}</p>
-                            </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(lead.id);
-                              }}
-                              className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0"
-                              title="Delete lead"
-                            >
-                              <Trash2 size={14} />
-                            </button>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Contact</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Property</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Score</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredLeads.map(lead => {
+                  const statusColor = getStatusColor(lead.leadStatus);
+                  return (
+                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
                           </div>
-
-                          {/* Lead Info */}
-                          <div className="space-y-2 mb-3 text-xs">
-                            {lead.phone && (
-                              <div className="flex items-center space-x-2 text-gray-600">
-                                <Phone size={12} className="flex-shrink-0" />
-                                <span>{lead.phone}</span>
-                              </div>
-                            )}
-                            {lead.propertyInterest && (
-                              <div className="flex items-center space-x-2 text-gray-600">
-                                <Home size={12} className="flex-shrink-0" />
-                                <span>{lead.propertyInterest}</span>
-                              </div>
-                            )}
-                          </div>
-
-                          {/* Badges */}
-                          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                            <span className={`px-2 py-1 rounded text-xs font-semibold ${getScoreColor(lead.score)}`}>
-                              {lead.score?.charAt(0).toUpperCase() + lead.score?.slice(1) || 'N/A'}
-                            </span>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedLead(lead);
-                              }}
-                              className="p-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-600 transition-all"
-                              title="View details"
-                            >
-                              <Eye size={14} />
-                            </button>
+                          <div>
+                            <p className="font-semibold text-gray-900">{lead.firstName} {lead.lastName}</p>
+                            <p className="text-sm text-gray-500">{lead.leadSource}</p>
                           </div>
                         </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="space-y-1">
+                          {lead.email && (
+                            <div className="flex items-center space-x-2 text-sm text-gray-600">
+                              <Mail size={16} />
+                              <span>{lead.email}</span>
+                            </div>
+                          )}
+                          {lead.phone && (
+                            <div className="flex items-center space-x-2 text-sm text-gray-600">
+                              <Phone size={16} />
+                              <span>{lead.phone}</span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <Home size={16} />
+                          <span>{lead.propertyInterest || '-'}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={lead.leadStatus}
+                          onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                          className={`px-3 py-1 rounded-lg text-sm font-medium border-0 cursor-pointer ${statusColor.badge}`}
+                        >
+                          {statuses.map(status => (
+                            <option key={status} value={status}>
+                              {status.charAt(0).toUpperCase() + status.slice(1)}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`px-3 py-1 rounded-lg text-sm font-medium ${getScoreColor(lead.leadScore)}`}>
+                          {lead.leadScore?.toUpperCase() || 'Cold'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center space-x-3">
+                          <button
+                            onClick={() => setSelectedLead(lead)}
+                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                            title="View details"
+                          >
+                            <Eye size={18} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(lead.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete lead"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
       {/* Lead Detail Modal */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
             {/* Modal Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-purple-50 to-purple-100 border-b border-purple-200 p-6 flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {selectedLead.firstName} {selectedLead.lastName}
-                </h2>
-                <p className="text-sm text-gray-600 mt-1">{selectedLead.email}</p>
-              </div>
+            <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold">Lead Details</h2>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="p-2 rounded-lg hover:bg-purple-200 text-gray-600 transition-colors flex-shrink-0"
+                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
               >
                 <X size={24} />
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6">
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
               <div className="grid grid-cols-2 gap-6">
-                {/* Email */}
-                <div className="flex items-start space-x-3">
-                  <div className="bg-blue-100 rounded-lg p-2 flex-shrink-0">
-                    <Mail className="text-blue-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">Email</p>
-                    <p className="font-semibold text-gray-900 text-sm">{selectedLead.email}</p>
-                  </div>
-                </div>
-
-                {/* Phone */}
-                <div className="flex items-start space-x-3">
-                  <div className="bg-green-100 rounded-lg p-2 flex-shrink-0">
-                    <Phone className="text-green-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">Phone</p>
-                    <p className="font-semibold text-gray-900 text-sm">{selectedLead.phone || '-'}</p>
-                  </div>
-                </div>
-
-                {/* Property Interest */}
-                <div className="flex items-start space-x-3">
-                  <div className="bg-orange-100 rounded-lg p-2 flex-shrink-0">
-                    <Home className="text-orange-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">Property Interest</p>
-                    <p className="font-semibold text-gray-900 text-sm">{selectedLead.propertyInterest || '-'}</p>
-                  </div>
-                </div>
-
-                {/* Timeline */}
-                <div className="flex items-start space-x-3">
-                  <div className="bg-purple-100 rounded-lg p-2 flex-shrink-0">
-                    <Calendar className="text-purple-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">Timeline</p>
-                    <p className="font-semibold text-gray-900 text-sm">{selectedLead.timeline || '-'}</p>
-                  </div>
-                </div>
-
-                {/* Budget */}
-                <div className="flex items-start space-x-3">
-                  <div className="bg-red-100 rounded-lg p-2 flex-shrink-0">
-                    <DollarSign className="text-red-600" size={20} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">Budget</p>
-                    <p className="font-semibold text-gray-900 text-sm">
-                      {selectedLead.budget?.min ? `$${selectedLead.budget.min} - $${selectedLead.budget.max}` : '-'}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Lead Source */}
                 <div>
-                  <p className="text-sm text-gray-600 font-medium mb-2">Lead Source</p>
-                  <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-sm font-semibold">
-                    {selectedLead.leadSource}
-                  </span>
+                  <p className="text-sm text-gray-600 font-medium">First Name</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.firstName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Last Name</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.lastName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Email</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.email || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Phone</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.phone || '-'}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-600 font-medium">Property Interest</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.propertyInterest || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Status</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.leadStatus}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600 font-medium">Score</p>
+                  <p className="text-lg font-semibold text-gray-900">{selectedLead.leadScore || 'Cold'}</p>
                 </div>
               </div>
 
-              {/* Status Selector */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <label className="text-sm text-gray-600 font-medium block mb-3">Update Status</label>
-                <select
-                  value={selectedLead.status}
-                  onChange={(e) => {
-                    handleStatusChange(selectedLead.id, e.target.value);
-                    setSelectedLead({ ...selectedLead, status: e.target.value });
-                  }}
-                  className="w-full px-4 py-2 rounded-lg border-2 border-gray-200 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                >
-                  <option value="new">New</option>
-                  <option value="contacted">Contacted</option>
-                  <option value="qualified">Qualified</option>
-                  <option value="converted">Converted</option>
-                  <option value="lost">Lost</option>
-                </select>
-              </div>
+              {selectedLead.notes && (
+                <div>
+                  <p className="text-sm text-gray-600 font-medium mb-2">Notes</p>
+                  <p className="text-gray-900">{selectedLead.notes}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
