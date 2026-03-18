@@ -91,16 +91,16 @@ export default function LeadsPage() {
   const statuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      {/* Welcome Banner */}
+      <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900">Leads</h1>
-          <p className="text-gray-600 mt-2">Manage and track your lead pipeline</p>
+          <h1 className="text-4xl font-bold mb-2">Leads</h1>
+          <p className="text-purple-100 text-lg">Manage and track your lead pipeline</p>
         </div>
         <button
           onClick={() => navigate('/import')}
-          className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+          className="flex items-center space-x-2 bg-white hover:bg-gray-100 text-purple-700 px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-200"
         >
           <Plus size={20} />
           <span>Import Leads</span>
