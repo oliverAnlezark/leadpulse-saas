@@ -1,60 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useLeadsStore } from '../store/leadsStore';
-import { useAuthStore } from '../store/authStore';
-import {
-  Trash2,
-  Eye,
-  Filter,
-  X,
-  Mail,
-  Phone,
-  Home,
-  Calendar,
-  DollarSign,
-  Search,
-  ChevronDown,
-  Users,
-  TrendingUp,
-  CheckCircle,
-  MessageSquare,
-  Clock,
-  ArrowRight,
-  Zap,
-} from 'lucide-react';
+import { Trash2, Eye, Filter, X, Mail, Phone, Home, Calendar, DollarSign, Search, ChevronDown } from 'lucide-react';
 
 export default function LeadsPage() {
-  const { agent } = useAuthStore();
   const { leads, getLeads, updateLeadStatus, deleteLead, loading } = useLeadsStore();
   const [filter, setFilter] = useState('all');
   const [selectedLead, setSelectedLead] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [analytics, setAnalytics] = useState(null);
-  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const status = filter === 'all' ? null : filter;
     getLeads(status);
   }, [filter]);
-
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        const response = await fetch('/api/analytics/dashboard', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setAnalytics(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch analytics:', error);
-      }
-    };
-
-    if (token) {
-      fetchAnalytics();
-    }
-  }, [token]);
 
   const handleStatusChange = async (leadId, newStatus) => {
     try {
@@ -103,277 +60,347 @@ export default function LeadsPage() {
 
   const statuses = ['new', 'contacted', 'qualified', 'converted', 'lost'];
 
-  const StatCard = ({ icon: Icon, label, value, change, color = 'purple' }) => {
-    const colorClasses = {
-      purple: 'from-purple-500 to-purple-600',
-      green: 'from-green-500 to-green-600',
-      blue: 'from-blue-500 to-blue-600',
-      orange: 'from-orange-500 to-orange-600',
-    };
-
-    return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md hover:border-gray-300 transition-all duration-300">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <p className="text-gray-600 text-sm font-medium mb-2">{label}</p>
-            <p className="text-3xl font-bold text-gray-900">{value}</p>
-            {change && (
-              <p className="text-green-600 text-sm font-medium mt-3 flex items-center space-x-1">
-                <TrendingUp size={14} />
-                <span>{change}</span>
-              </p>
-            )}
-          </div>
-          <div className={`bg-gradient-to-br ${colorClasses[color]} rounded-xl p-4 shadow-lg`}>
-            <Icon className="text-white" size={28} />
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="space-y-8">
-      {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 rounded-2xl p-8 text-white shadow-lg">
-        <h1 className="text-4xl font-bold mb-2">Your Leads Pipeline 📋</h1>
-        <p className="text-purple-100 text-lg">Manage and track all your leads in one place</p>
+    <div style={{ padding: '40px 60px', background: '#f9fafb', minHeight: '100vh' }}>
+      {/* Header */}
+      <div style={{ marginBottom: '40px' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>Leads</h1>
+        <p style={{ fontSize: '16px', color: '#6b7280' }}>Manage and track your lead pipeline</p>
       </div>
-
-      {/* Key Metrics Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map(i => (
-            <div
-              key={i}
-              className="bg-gradient-to-br from-gray-200 to-gray-100 rounded-xl h-40 animate-pulse"
-            ></div>
-          ))}
-        </div>
-      ) : analytics ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            icon={Users}
-            label="Total Leads"
-            value={analytics.leads.total}
-            change={`${analytics.leads.qualified} qualified`}
-            color="purple"
-          />
-          <StatCard
-            icon={CheckCircle}
-            label="Converted"
-            value={analytics.leads.converted}
-            change={`${analytics.leads.hot} hot leads`}
-            color="green"
-          />
-          <StatCard
-            icon={MessageSquare}
-            label="Messages Sent"
-            value={analytics.communications.reduce((sum, c) => sum + c.sent, 0)}
-            change={`${analytics.communications.reduce((sum, c) => sum + c.delivered, 0)} delivered`}
-            color="blue"
-          />
-          <StatCard
-            icon={Clock}
-            label="Avg Response"
-            value={`${analytics.responseTime.average}m`}
-            change={`${analytics.responseTime.min}m - ${analytics.responseTime.max}m`}
-            color="orange"
-          />
-        </div>
-      ) : null}
 
       {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-        <div className="flex-1 w-full sm:w-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+      <div style={{
+        background: 'white',
+        borderRadius: '12px',
+        border: '1px solid #e5e7eb',
+        padding: '16px',
+        marginBottom: '32px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ flex: 1, minWidth: '200px', position: 'relative' }}>
+            <Search style={{ position: 'absolute', left: '12px', top: '10px', color: '#9ca3af', width: '20px', height: '20px' }} />
             <input
               type="text"
               placeholder="Search leads by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              style={{
+                width: '100%',
+                paddingLeft: '40px',
+                paddingRight: '16px',
+                paddingTop: '8px',
+                paddingBottom: '8px',
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                fontSize: '14px',
+                outline: 'none',
+              }}
             />
           </div>
-        </div>
 
-        <div className="flex items-center space-x-2">
-          <Filter size={20} className="text-gray-600" />
-          <div className="flex space-x-2">
-            {['all', ...statuses].map(status => (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filter === status
-                    ? 'bg-purple-600 text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {status.charAt(0).toUpperCase() + status.slice(1)}
-              </button>
-            ))}
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Filter style={{ color: '#6b7280', width: '20px', height: '20px' }} />
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {['all', ...statuses].map(status => (
+                <button
+                  key={status}
+                  onClick={() => setFilter(status)}
+                  style={{
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    fontWeight: '500',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    background: filter === status ? '#9333ea' : '#f3f4f6',
+                    color: filter === status ? 'white' : '#374151',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Leads List */}
-      {filteredLeads.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <Eye size={48} className="mx-auto text-gray-400 mb-4" />
-          <p className="text-gray-600 text-lg">No leads found</p>
-          <p className="text-gray-500 mt-2">Start by importing leads from a file or connecting your CRM</p>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+          <div style={{ display: 'inline-block', animation: 'spin 1s linear infinite', marginBottom: '16px' }}>
+            <div style={{ width: '48px', height: '48px', border: '4px solid #e5e7eb', borderTop: '4px solid #9333ea', borderRadius: '50%' }} />
+          </div>
+          <p style={{ color: '#6b7280' }}>Loading leads...</p>
+        </div>
+      ) : filteredLeads.length === 0 ? (
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          border: '1px solid #e5e7eb',
+          padding: '48px 20px',
+          textAlign: 'center',
+        }}>
+          <Eye style={{ width: '48px', height: '48px', color: '#d1d5db', margin: '0 auto 16px' }} />
+          <p style={{ color: '#6b7280', fontSize: '18px' }}>No leads found</p>
+          <p style={{ color: '#9ca3af', marginTop: '8px' }}>Start by importing leads from a file or connecting your CRM</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Contact</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Property</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Score</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredLeads.map(lead => {
-                  const statusColor = getStatusColor(lead.leadStatus);
-                  return (
-                    <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                            {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
+        <div style={{
+          background: 'white',
+          borderRadius: '12px',
+          border: '1px solid #e5e7eb',
+          overflow: 'hidden',
+        }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Name</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Contact</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Property</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Status</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Score</th>
+                <th style={{ padding: '16px 24px', textAlign: 'left', fontSize: '14px', fontWeight: '600', color: '#111827' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLeads.map(lead => {
+                const statusColor = getStatusColor(lead.leadStatus);
+                return (
+                  <tr key={lead.id} style={{ borderBottom: '1px solid #e5e7eb', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.background = 'white'}>
+                    <td style={{ padding: '16px 24px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{
+                          width: '40px',
+                          height: '40px',
+                          background: 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: '14px',
+                        }}>
+                          {lead.firstName?.charAt(0)}{lead.lastName?.charAt(0)}
+                        </div>
+                        <div>
+                          <p style={{ fontWeight: '600', color: '#111827' }}>{lead.firstName} {lead.lastName}</p>
+                          <p style={{ fontSize: '14px', color: '#6b7280' }}>{lead.leadSource}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {lead.email && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#6b7280' }}>
+                            <Mail size={16} />
+                            <span>{lead.email}</span>
                           </div>
-                          <div>
-                            <p className="font-semibold text-gray-900">{lead.firstName} {lead.lastName}</p>
-                            <p className="text-sm text-gray-500">{lead.leadSource}</p>
+                        )}
+                        {lead.phone && (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#6b7280' }}>
+                            <Phone size={16} />
+                            <span>{lead.phone}</span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
-                          {lead.email && (
-                            <div className="flex items-center space-x-2 text-sm text-gray-600">
-                              <Mail size={16} />
-                              <span>{lead.email}</span>
-                            </div>
-                          )}
-                          {lead.phone && (
-                            <div className="flex items-center space-x-2 text-sm text-gray-600">
-                              <Phone size={16} />
-                              <span>{lead.phone}</span>
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2 text-sm text-gray-600">
-                          <Home size={16} />
-                          <span>{lead.propertyInterest || '-'}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <select
-                          value={lead.leadStatus}
-                          onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                          className={`px-3 py-1 rounded-lg text-sm font-medium border-0 cursor-pointer ${statusColor.badge}`}
+                        )}
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#6b7280' }}>
+                        <Home size={16} />
+                        <span>{lead.propertyInterest || '-'}</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <select
+                        value={lead.leadStatus}
+                        onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: statusColor.badge.split(' ')[0].replace('bg-', '') === 'blue-100' ? '#dbeafe' : statusColor.badge.split(' ')[0].replace('bg-', '') === 'purple-100' ? '#e9d5ff' : statusColor.badge.split(' ')[0].replace('bg-', '') === 'green-100' ? '#dcfce7' : statusColor.badge.split(' ')[0].replace('bg-', '') === 'emerald-100' ? '#d1fae5' : '#fee2e2',
+                          color: statusColor.badge.split(' ')[1],
+                        }}
+                      >
+                        {statuses.map(status => (
+                          <option key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <span style={{
+                        padding: '6px 12px',
+                        borderRadius: '6px',
+                        fontSize: '13px',
+                        fontWeight: '500',
+                        background: getScoreColor(lead.leadScore).split(' ')[0].replace('bg-', '') === 'red-100' ? '#fee2e2' : getScoreColor(lead.leadScore).split(' ')[0].replace('bg-', '') === 'orange-100' ? '#fed7aa' : '#dbeafe',
+                        color: getScoreColor(lead.leadScore).split(' ')[1],
+                      }}>
+                        {lead.leadScore?.toUpperCase() || 'Cold'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '16px 24px' }}>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <button
+                          onClick={() => setSelectedLead(lead)}
+                          style={{
+                            padding: '8px',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#6b7280',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
                         >
-                          {statuses.map(status => (
-                            <option key={status} value={status}>
-                              {status.charAt(0).toUpperCase() + status.slice(1)}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-lg text-sm font-medium ${getScoreColor(lead.leadScore)}`}>
-                          {lead.leadScore?.toUpperCase() || 'Cold'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-3">
-                          <button
-                            onClick={() => setSelectedLead(lead)}
-                            className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                            title="View details"
-                          >
-                            <Eye size={18} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(lead.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete lead"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                          <Eye size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(lead.id)}
+                          style={{
+                            padding: '8px',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#dc2626',
+                            transition: 'all 0.2s',
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.background = '#fee2e2'}
+                          onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
       {/* Lead Detail Modal */}
       {selectedLead && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-96 overflow-y-auto">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+          padding: '16px',
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            maxWidth: '800px',
+            width: '100%',
+            maxHeight: '90vh',
+            overflow: 'auto',
+          }}>
             {/* Modal Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Lead Details</h2>
+            <div style={{
+              background: 'linear-gradient(to right, #9333ea, #7e22ce)',
+              color: 'white',
+              padding: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              position: 'sticky',
+              top: 0,
+            }}>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold' }}>Lead Details</h2>
               <button
                 onClick={() => setSelectedLead(null)}
-                className="p-2 hover:bg-white hover:bg-opacity-20 rounded-lg transition-colors"
+                style={{
+                  padding: '8px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'white',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'none'}
               >
                 <X size={24} />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+            <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">First Name</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.firstName}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>First Name</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.firstName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Last Name</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.lastName}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Last Name</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.lastName}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Email</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.email || '-'}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Email</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.email || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Phone</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.phone || '-'}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Phone</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.phone || '-'}</p>
                 </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-gray-600 font-medium">Property Interest</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.propertyInterest || '-'}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Status</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.leadStatus}</p>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Property Interest</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.propertyInterest || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600 font-medium">Score</p>
-                  <p className="text-lg font-semibold text-gray-900">{selectedLead.leadScore || 'Cold'}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Status</p>
+                  <select
+                    value={selectedLead.status}
+                    onChange={(e) => {
+                      handleStatusChange(selectedLead.id, e.target.value);
+                      setSelectedLead({ ...selectedLead, status: e.target.value });
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      color: '#111827',
+                      outline: 'none',
+                      background: 'white',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <option value="new">New</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="qualified">Qualified</option>
+                    <option value="converted">Converted</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                </div>
+                <div>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '4px' }}>Score</p>
+                  <p style={{ fontSize: '18px', fontWeight: '600', color: '#111827' }}>{selectedLead.leadScore || 'Cold'}</p>
                 </div>
               </div>
 
               {selectedLead.notes && (
                 <div>
-                  <p className="text-sm text-gray-600 font-medium mb-2">Notes</p>
-                  <p className="text-gray-900">{selectedLead.notes}</p>
+                  <p style={{ fontSize: '13px', color: '#6b7280', fontWeight: '500', marginBottom: '8px' }}>Notes</p>
+                  <p style={{ color: '#111827' }}>{selectedLead.notes}</p>
                 </div>
               )}
             </div>
